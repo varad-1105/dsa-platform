@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Two Sum Problem</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background:#f4f6f8;
+transition:0.3s;
+}
+
+body.dark{
+background:#1e1e1e;
+color:#e4e4e4;
+}
+
+.navbar{
+background:#2c3e50;
+padding:15px;
+text-align:center;
+}
+
+.navbar a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+font-size:18px;
+}
+
+.theme-btn{
+float:right;
+margin-right:20px;
+background:#1abc9c;
+}
+
+.container{
+width:90%;
+margin:auto;
+margin-top:30px;
+}
+
+.split-layout{
+display:flex;
+gap:20px;
+}
+
+.left-panel{
+flex:1;
+}
+
+.right-panel{
+flex:1.2;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:8px;
+margin-bottom:20px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+body.dark .box{
+background:#2b2b2b;
+}
+
+#editor{
+height:450px;
+border:1px solid #ccc;
+}
+
+button{
+padding:10px 20px;
+background:#3498db;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+margin-top:10px;
+margin-right:10px;
+}
+
+button:hover{
+background:#2980b9;
+}
+
+.results{
+margin-top:15px;
+}
+
+.result{
+padding:10px;
+border-radius:6px;
+margin-bottom:8px;
+font-family:monospace;
+}
+
+.pass{
+background:#d4edda;
+color:#155724;
+}
+
+.fail{
+background:#f8d7da;
+color:#721c24;
+}
+
+.testcase{
+background:#eef3f7;
+padding:10px;
+border-radius:5px;
+margin-top:10px;
+font-family:monospace;
+}
+
+body.dark .testcase{
+background:#3a3a3a;
+}
+
+.hints{
+background:#fff3cd;
+padding:10px;
+border-radius:6px;
+margin-top:10px;
+display:none;
+}
+
+body.dark .hints{
+background:#444;
+}
+
+.solution{
+background:#e8f6ff;
+padding:12px;
+border-radius:6px;
+margin-top:10px;
+display:none;
+font-family:monospace;
+}
+
+body.dark .solution{
+background:#3a4a55;
+}
+
+.warning{
+color:red;
+margin-top:10px;
+font-weight:bold;
+display:none;
+}
+
+.language-selector{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+}
+
+.lang-btn{
+padding:9px 18px;
+border-radius:6px;
+border:none;
+cursor:pointer;
+background:#34495e;
+color:white;
+font-size:14px;
+font-weight:500;
+transition:0.2s;
+}
+
+.lang-btn:hover{
+background:#2c3e50;
+}
+
+.lang-btn.active{
+background:#1abc9c;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<a href="/">Home</a>
+<a href="/learn">Learn</a>
+<a href="/problems">Problems</a>
+<a href="/login">Login</a>
+
+<button class="theme-btn" onclick="toggleTheme()">Toggle Theme</button>
+
+</div>
+
+<div class="container">
+
+<div class="split-layout">
+
+<div class="left-panel">
+
+<div class="box">
+
+<h2>Two Sum</h2>
+
+<p>
+Given an array of integers <b>nums</b> and a target,
+return indices of the two numbers such that they add up to target.
+</p>
+
+<h3>Example</h3>
+
+<div class="testcase">
+Input:
+2 7 11 15
+9
+
+Output:
+0 1
+</div>
+
+<h3>Hints</h3>
+
+<button onclick="showHint('hint1')">Show Hint 1</button>
+
+<div id="hint1" class="hints">
+Think about storing numbers in a <b>HashMap</b>.
+</div>
+
+<button onclick="showHint('hint2')">Show Hint 2</button>
+
+<div id="hint2" class="hints">
+Check if <b>target - current number</b> already exists.
+</div>
+
+<h3>Solution</h3>
+
+<button onclick="showSolution()">Show Solution</button>
+
+<div id="solution-warning" class="warning">
+Please attempt the problem once before viewing the solution.
+</div>
+
+<div id="solution" class="solution">
+
+<b>Optimized Python Solution (O(n))</b>
+
+<pre>
+nums = list(map(int,input().split()))
+target = int(input())
+
+seen = {}
+
+for i in range(len(nums)):
+    complement = target - nums[i]
+
+    if complement in seen:
+        print(seen[complement], i)
+        break
+
+    seen[nums[i]] = i
+</pre>
+
+<b>Time Complexity:</b> O(n)
+
+</div>
+
+</div>
+
+</div>
+
+<div class="right-panel">
+
+<div class="box">
+
+<h3>Select Language</h3>
+
+<div class="language-selector">
+
+<button class="lang-btn active" onclick="selectLanguage('python',this)">Python</button>
+<button class="lang-btn" onclick="selectLanguage('c',this)">C</button>
+<button class="lang-btn" onclick="selectLanguage('cpp',this)">C++</button>
+<button class="lang-btn" onclick="selectLanguage('java',this)">Java</button>
+
+</div>
+
+<input type="hidden" id="language" value="python">
+
+<h3>Write Your Code</h3>
+
+<div id="editor"></div>
+
+<button onclick="runCode()">Run Code</button>
+<button onclick="clearOutput()">Clear Output</button>
+
+<div class="results" id="results"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
+
+<script>
+
+let editor;
+let attempted = false;
+
+require.config({
+paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs' }
+});
+
+require(["vs/editor/editor.main"], function () {
+
+let savedCode = localStorage.getItem("two_sum_code");
+
+editor = monaco.editor.create(document.getElementById("editor"), {
+
+value: savedCode ? savedCode : `# Write your solution here`,
+language: "python",
+theme: "vs-dark",
+automaticLayout: true
+
+});
+
+editor.onDidChangeModelContent(() => {
+localStorage.setItem("two_sum_code", editor.getValue());
+});
+
+});
+
+function showHint(id){
+document.getElementById(id).style.display="block";
+}
+
+function showSolution(){
+
+if(!attempted){
+
+document.getElementById("solution-warning").style.display="block";
+return;
+
+}
+
+document.getElementById("solution-warning").style.display="none";
+document.getElementById("solution").style.display="block";
+
+}
+
+function runCode(){
+
+attempted = true;
+
+let code = editor.getValue();
+let language = document.getElementById("language").value;
+
+fetch("/run-code",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body: JSON.stringify({
+code: code,
+language: language
+})
+
+})
+.then(response => response.json())
+.then(data => {
+
+let resultsDiv = document.getElementById("results");
+resultsDiv.innerHTML = "";
+
+data.results.forEach((res,index)=>{
+
+let div = document.createElement("div");
+
+div.classList.add("result");
+
+if(res.includes("Passed")){
+div.classList.add("pass");
+}else{
+div.classList.add("fail");
+}
+
+div.innerText = "Test Case " + (index+1) + " : " + res;
+
+resultsDiv.appendChild(div);
+
+});
+
+});
+
+}
+
+function clearOutput(){
+document.getElementById("results").innerHTML = "";
+}
+
+function toggleTheme(){
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"theme",
+document.body.classList.contains("dark") ? "dark" : "light"
+);
+
+}
+
+if(localStorage.getItem("theme") === "dark"){
+document.body.classList.add("dark");
+}
+
+</script>
+
+</body>
+
+</html>

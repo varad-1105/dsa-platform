@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Problems</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background-color:#f4f6f8;
+}
+
+/* NAVBAR */
+
+.navbar{
+background:#2c3e50;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.nav-left a{
+color:white;
+margin-right:20px;
+text-decoration:none;
+font-size:18px;
+}
+
+.nav-left a:hover{
+color:#1abc9c;
+}
+
+.nav-right{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.username{
+background:#34495e;
+color:white;
+padding:6px 12px;
+border-radius:15px;
+font-size:14px;
+}
+
+.logout-btn{
+background:#e74c3c;
+color:white;
+padding:6px 12px;
+border-radius:6px;
+text-decoration:none;
+font-size:14px;
+}
+
+.logout-btn:hover{
+background:#c0392b;
+}
+
+/* MAIN CONTAINER */
+
+.container{
+width:70%;
+margin:auto;
+margin-top:40px;
+}
+
+/* SEARCH */
+
+.search{
+width:100%;
+padding:12px;
+font-size:16px;
+margin-bottom:20px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+/* FILTERS */
+
+.filters{
+margin-bottom:20px;
+}
+
+.filter-btn{
+padding:8px 14px;
+margin-right:10px;
+margin-bottom:10px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+background:#ddd;
+}
+
+.filter-btn:hover{
+background:#ccc;
+}
+
+/* PROBLEMS */
+
+.problem{
+background:white;
+padding:20px;
+margin:15px 0;
+border-radius:8px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+font-size:18px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+transition:0.3s;
+}
+
+.problem:hover{
+background:#eaf2f8;
+cursor:pointer;
+}
+
+.solved{
+background:#d4edda;
+}
+
+.problem-left{
+display:flex;
+gap:15px;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.status{
+font-size:16px;
+}
+
+/* DIFFICULTY */
+
+.difficulty{
+padding:4px 10px;
+border-radius:10px;
+font-size:14px;
+color:white;
+}
+
+.easy{
+background:#27ae60;
+}
+
+.medium{
+background:#f39c12;
+}
+
+.hard{
+background:#e74c3c;
+}
+
+/* TAGS */
+
+.tag{
+background:#3498db;
+color:white;
+padding:3px 8px;
+border-radius:6px;
+font-size:12px;
+}
+
+/* COMPANY TAGS */
+
+.company{
+background:#9b59b6;
+}
+
+a{
+text-decoration:none;
+color:black;
+}
+
+/* PROGRESS */
+
+.progress{
+margin-bottom:10px;
+font-size:20px;
+font-weight:bold;
+}
+
+.progress-bar{
+width:100%;
+background:#ddd;
+border-radius:10px;
+overflow:hidden;
+margin-bottom:25px;
+height:20px;
+}
+
+.progress-fill{
+height:100%;
+width:0%;
+background:#27ae60;
+transition:width 0.5s;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div class="nav-left">
+<a href="/">Home</a>
+<a href="/learn">Learn</a>
+<a href="/problems">Problems</a>
+<a href="/leaderboard">Leaderboard</a>
+</div>
+
+<div class="nav-right">
+
+{% if session.username %}
+
+<a href="/dashboard" style="color:white;">Dashboard</a>
+<span class="username">👤 {{ session.username }}</span>
+<a href="/logout" class="logout-btn">Logout</a>
+
+{% else %}
+
+<a href="/login" style="color:white;">Login</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<div class="container">
+
+<h2>Top Interview Problems</h2>
+
+<div class="progress" id="progress">
+Solved: 0 / 100
+</div>
+
+<div class="progress-bar">
+<div class="progress-fill" id="progress-fill"></div>
+</div>
+
+<input
+type="text"
+class="search"
+id="searchBox"
+placeholder="Search problems..."
+onkeyup="searchProblems()"
+/>
+
+<div class="filters">
+
+<b>Difficulty:</b><br>
+
+<button class="filter-btn" onclick="filterDifficulty('all')">All</button>
+<button class="filter-btn" onclick="filterDifficulty('easy')">Easy</button>
+<button class="filter-btn" onclick="filterDifficulty('medium')">Medium</button>
+<button class="filter-btn" onclick="filterDifficulty('hard')">Hard</button>
+
+<br><br>
+
+<b>Companies:</b><br>
+
+<button class="filter-btn" onclick="filterCompany('all')">All</button>
+<button class="filter-btn" onclick="filterCompany('google')">Google</button>
+<button class="filter-btn" onclick="filterCompany('amazon')">Amazon</button>
+<button class="filter-btn" onclick="filterCompany('microsoft')">Microsoft</button>
+
+</div>
+
+
+<a href="/two-sum">
+
+<div class="problem easy google amazon microsoft" id="two-sum-problem">
+
+<div class="problem-left">
+
+<span class="problem-name">1. Two Sum</span>
+
+<span class="difficulty easy">Easy</span>
+
+<span class="tag">Array</span>
+<span class="tag">HashMap</span>
+
+<span class="tag company">Google</span>
+<span class="tag company">Amazon</span>
+<span class="tag company">Microsoft</span>
+
+</div>
+
+<span class="status" id="two-sum-status">❌ Unsolved</span>
+
+</div>
+
+</a>
+
+</div>
+
+<script>
+
+/* PROGRESS */
+
+fetch("/progress")
+.then(res => res.json())
+.then(data => {
+
+document.getElementById("progress").innerText =
+"Solved: " + data.solved + " / " + data.total;
+
+let percent = (data.solved / data.total) * 100;
+
+document.getElementById("progress-fill").style.width =
+percent + "%";
+
+});
+
+
+/* SHOW SOLVED STATUS */
+
+fetch("/progress")
+.then(res => res.json())
+.then(data => {
+
+if(data.solved > 0){
+
+document.getElementById("two-sum-status").innerText = "✅ Solved"
+document.getElementById("two-sum-problem").classList.add("solved")
+
+}
+
+})
+
+
+/* SEARCH */
+
+function searchProblems(){
+
+let input = document.getElementById("searchBox").value.toLowerCase();
+
+let problems = document.getElementsByClassName("problem");
+
+for(let i=0;i<problems.length;i++){
+
+let name = problems[i].innerText.toLowerCase();
+
+if(name.includes(input)){
+problems[i].style.display = "flex";
+}else{
+problems[i].style.display = "none";
+}
+
+}
+
+}
+
+
+/* DIFFICULTY FILTER */
+
+function filterDifficulty(level){
+
+let problems = document.getElementsByClassName("problem");
+
+for(let i=0;i<problems.length;i++){
+
+if(level === "all"){
+problems[i].style.display = "flex";
+}
+else if(problems[i].classList.contains(level)){
+problems[i].style.display = "flex";
+}
+else{
+problems[i].style.display = "none";
+}
+
+}
+
+}
+
+
+/* COMPANY FILTER */
+
+function filterCompany(company){
+
+let problems = document.getElementsByClassName("problem");
+
+for(let i=0;i<problems.length;i++){
+
+if(company === "all"){
+problems[i].style.display = "flex";
+}
+else if(problems[i].classList.contains(company)){
+problems[i].style.display = "flex";
+}
+else{
+problems[i].style.display = "none";
+}
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>

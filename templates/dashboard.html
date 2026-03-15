@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Dashboard</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background:#f4f6f8;
+}
+
+.navbar{
+background:#2c3e50;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.navbar a{
+color:white;
+text-decoration:none;
+margin-right:20px;
+font-size:16px;
+}
+
+.username{
+background:#34495e;
+color:white;
+padding:6px 12px;
+border-radius:15px;
+}
+
+.logout-btn{
+background:#e74c3c;
+color:white;
+padding:6px 12px;
+border-radius:6px;
+text-decoration:none;
+}
+
+.container{
+width:60%;
+margin:auto;
+margin-top:60px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.progress-bar{
+width:100%;
+background:#ddd;
+border-radius:10px;
+overflow:hidden;
+height:20px;
+margin-top:10px;
+}
+
+.progress-fill{
+height:100%;
+background:#27ae60;
+width:0%;
+transition:0.4s;
+}
+
+.stats{
+margin-top:25px;
+display:flex;
+justify-content:space-between;
+}
+
+.stat{
+background:#f2f2f2;
+padding:15px;
+border-radius:8px;
+width:30%;
+text-align:center;
+}
+
+.stat h3{
+margin:0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div>
+<a href="/">Home</a>
+<a href="/problems">Problems</a>
+<a href="/leaderboard">Leaderboard</a>
+</div>
+
+<div>
+<span class="username">👤 {{ session.username }}</span>
+<a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Welcome, {{ session.username }}</h2>
+
+<h3>Solved Problems</h3>
+
+<p id="progress-text">0 / 100</p>
+
+<div class="progress-bar">
+<div class="progress-fill" id="progress-fill"></div>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<h3 id="easy">0</h3>
+<p>Easy</p>
+</div>
+
+<div class="stat">
+<h3 id="medium">0</h3>
+<p>Medium</p>
+</div>
+
+<div class="stat">
+<h3 id="hard">0</h3>
+<p>Hard</p>
+</div>
+
+</div>
+
+<br>
+
+<p>Keep solving problems to unlock more challenges 🚀</p>
+
+</div>
+
+</div>
+
+<script>
+
+fetch("/progress")
+.then(res => res.json())
+.then(data => {
+
+document.getElementById("progress-text").innerText =
+data.solved + " / " + data.total
+
+let percent = (data.solved / data.total) * 100
+
+document.getElementById("progress-fill").style.width =
+percent + "%"
+
+})
+
+fetch("/user-stats")
+.then(res => res.json())
+.then(data => {
+
+document.getElementById("easy").innerText = data.easy
+document.getElementById("medium").innerText = data.medium
+document.getElementById("hard").innerText = data.hard
+
+})
+
+</script>
+
+</body>
+
+</html>
