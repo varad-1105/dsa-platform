@@ -56,9 +56,11 @@ border:1px solid #ccc;
 font-size:16px;
 }
 
-/* RATING */
+/* ⭐ FIXED RATING */
 
 .rating{
+direction: rtl;
+display:inline-block;
 margin:15px 0;
 }
 
@@ -67,11 +69,13 @@ display:none;
 }
 
 .rating label{
-font-size:28px;
+font-size:30px;
 color:#ccc;
 cursor:pointer;
 }
 
+.rating label:hover,
+.rating label:hover ~ label,
 .rating input:checked ~ label{
 color:gold;
 }
@@ -121,20 +125,20 @@ font-weight:bold;
 
 <b>Rating:</b><br>
 
-<input type="radio" name="rating" value="5" id="5">
-<label for="5">★</label>
+<input type="radio" name="rating" value="5" id="star5">
+<label for="star5">★</label>
 
-<input type="radio" name="rating" value="4" id="4">
-<label for="4">★</label>
+<input type="radio" name="rating" value="4" id="star4">
+<label for="star4">★</label>
 
-<input type="radio" name="rating" value="3" id="3">
-<label for="3">★</label>
+<input type="radio" name="rating" value="3" id="star3">
+<label for="star3">★</label>
 
-<input type="radio" name="rating" value="2" id="2">
-<label for="2">★</label>
+<input type="radio" name="rating" value="2" id="star2">
+<label for="star2">★</label>
 
-<input type="radio" name="rating" value="1" id="1">
-<label for="1">★</label>
+<input type="radio" name="rating" value="1" id="star1">
+<label for="star1">★</label>
 
 </div>
 
