@@ -44,7 +44,7 @@ border-radius:10px;
 box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* INPUT */
+/* TEXTAREA */
 
 textarea{
 width:100%;
@@ -56,27 +56,15 @@ border:1px solid #ccc;
 font-size:16px;
 }
 
-/* ⭐ FIXED RATING */
+/* ⭐ STAR RATING */
 
-.rating{
-direction: rtl;
-display:inline-block;
-margin:15px 0;
-}
-
-.rating input{
-display:none;
-}
-
-.rating label{
+.rating span{
 font-size:30px;
 color:#ccc;
 cursor:pointer;
 }
 
-.rating label:hover,
-.rating label:hover ~ label,
-.rating input:checked ~ label{
+.rating span.active{
 color:gold;
 }
 
@@ -125,22 +113,15 @@ font-weight:bold;
 
 <b>Rating:</b><br>
 
-<input type="radio" name="rating" value="5" id="star5">
-<label for="star5">★</label>
-
-<input type="radio" name="rating" value="4" id="star4">
-<label for="star4">★</label>
-
-<input type="radio" name="rating" value="3" id="star3">
-<label for="star3">★</label>
-
-<input type="radio" name="rating" value="2" id="star2">
-<label for="star2">★</label>
-
-<input type="radio" name="rating" value="1" id="star1">
-<label for="star1">★</label>
+<span onclick="setRating(1)">★</span>
+<span onclick="setRating(2)">★</span>
+<span onclick="setRating(3)">★</span>
+<span onclick="setRating(4)">★</span>
+<span onclick="setRating(5)">★</span>
 
 </div>
+
+<input type="hidden" name="rating" id="rating-value">
 
 <b>Message:</b>
 
@@ -157,6 +138,26 @@ font-weight:bold;
 </div>
 
 </div>
+
+<script>
+
+function setRating(value){
+
+document.getElementById("rating-value").value = value;
+
+let stars = document.querySelectorAll(".rating span");
+
+stars.forEach((star,index)=>{
+if(index < value){
+star.classList.add("active");
+}else{
+star.classList.remove("active");
+}
+});
+
+}
+
+</script>
 
 </body>
 
