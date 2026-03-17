@@ -11,7 +11,10 @@ app.secret_key = "secret123"
 # ---------------- DATABASE ---------------- #
 
 def get_db():
-    conn = sqlite3.connect("database.db")
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.path.join(BASE_DIR, "database.db")
+
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -20,6 +23,7 @@ def init_db():
     conn = get_db()
     cursor = conn.cursor()
 
+    # USERS TABLE
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,12 +32,23 @@ def init_db():
     )
     """)
 
+    # SOLVED TABLE
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS solved(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
         problem TEXT,
         difficulty TEXT
+    )
+    """)
+
+    # 🔥 FEEDBACK TABLE
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS feedback(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        rating INTEGER,
+        message TEXT
     )
     """)
 
@@ -56,22 +71,17 @@ def learn():
     return render_template("learn.html")
 
 
-# ---------------- LOGIN PAGE ---------------- #
+# ---------------- LOGIN ---------------- #
 
 @app.route("/login")
 def login():
-
     if "user_id" in session:
         return redirect("/dashboard")
-
     return render_template("login.html")
 
 
-# ---------------- SIGNUP ---------------- #
-
 @app.route("/signup", methods=["POST"])
 def signup():
-
     username = request.form["username"]
     password = request.form["password"]
 
@@ -84,20 +94,15 @@ def signup():
             (username, password)
         )
         conn.commit()
-
     except:
         return "User already exists"
 
     conn.close()
-
     return redirect("/login")
 
 
-# ---------------- LOGIN USER ---------------- #
-
 @app.route("/login-user", methods=["POST"])
 def login_user():
-
     username = request.form["username"]
     password = request.form["password"]
 
@@ -119,8 +124,6 @@ def login_user():
     return "Invalid login credentials"
 
 
-# ---------------- LOGOUT ---------------- #
-
 @app.route("/logout")
 def logout():
     session.clear()
@@ -131,36 +134,56 @@ def logout():
 
 @app.route("/dashboard")
 def dashboard():
-
     if "user_id" not in session:
         return redirect("/login")
-
     return render_template("dashboard.html")
 
 
-# ---------------- PROBLEMS PAGE ---------------- #
+# ---------------- PROBLEMS ---------------- #
 
 @app.route("/problems")
 def problems():
-
     if "user_id" not in session:
         return redirect("/login")
-
     return render_template("problems.html")
 
 
-# ---------------- PROBLEM PAGE ---------------- #
-
 @app.route("/two-sum")
 def two_sum():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("two_sum.html")
+
+
+# ---------------- FEEDBACK ---------------- #
+
+@app.route("/feedback", methods=["GET", "POST"])
+def feedback():
 
     if "user_id" not in session:
         return redirect("/login")
 
-    return render_template("two_sum.html")
+    if request.method == "POST":
+        rating = request.form["rating"]
+        message = request.form["message"]
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO feedback(user_id, rating, message) VALUES(?,?,?)",
+            (session["user_id"], rating, message)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return render_template("feedback.html", success=True)
+
+    return render_template("feedback.html", success=False)
 
 
-# ---------------- USER PROGRESS ---------------- #
+# ---------------- PROGRESS ---------------- #
 
 @app.route("/progress")
 def progress():
@@ -184,64 +207,6 @@ def progress():
     })
 
 
-# ---------------- USER STATS ---------------- #
-
-@app.route("/user-stats")
-def user_stats():
-
-    if "user_id" not in session:
-        return jsonify({"easy": 0, "medium": 0, "hard": 0})
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    easy = cursor.execute(
-        "SELECT COUNT(*) FROM solved WHERE user_id=? AND difficulty='easy'",
-        (session["user_id"],)
-    ).fetchone()[0]
-
-    medium = cursor.execute(
-        "SELECT COUNT(*) FROM solved WHERE user_id=? AND difficulty='medium'",
-        (session["user_id"],)
-    ).fetchone()[0]
-
-    hard = cursor.execute(
-        "SELECT COUNT(*) FROM solved WHERE user_id=? AND difficulty='hard'",
-        (session["user_id"],)
-    ).fetchone()[0]
-
-    conn.close()
-
-    return jsonify({
-        "easy": easy,
-        "medium": medium,
-        "hard": hard
-    })
-
-
-# ---------------- LEADERBOARD ---------------- #
-
-@app.route("/leaderboard")
-def leaderboard():
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    users = cursor.execute("""
-        SELECT users.username, COUNT(solved.problem) as solved_count
-        FROM users
-        LEFT JOIN solved
-        ON users.id = solved.user_id
-        GROUP BY users.id
-        ORDER BY solved_count DESC
-        LIMIT 10
-    """).fetchall()
-
-    conn.close()
-
-    return render_template("leaderboard.html", users=users)
-
-
 # ---------------- CODE RUNNER ---------------- #
 
 @app.route("/run-code", methods=["POST"])
@@ -261,15 +226,11 @@ def run_code():
     results = []
 
     try:
-
-        suffix = ".py"
-
-        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".py") as temp:
             temp.write(code.encode())
             temp_path = temp.name
 
         for case in test_cases:
-
             result = subprocess.run(
                 ["python", temp_path],
                 input=case["input"],
@@ -278,44 +239,19 @@ def run_code():
                 timeout=5
             )
 
-            user_output = result.stdout.strip()
-
-            if user_output == case["output"]:
+            if result.stdout.strip() == case["output"]:
                 results.append("Passed ✅")
             else:
-                results.append(
-                    f"Failed ❌ | Expected: {case['output']} | Got: {user_output}"
-                )
-
-        if all("Passed" in r for r in results):
-
-            conn = get_db()
-            cursor = conn.cursor()
-
-            already = cursor.execute(
-                "SELECT * FROM solved WHERE user_id=? AND problem=?",
-                (session["user_id"], "two-sum")
-            ).fetchone()
-
-            if not already:
-                cursor.execute(
-                    "INSERT INTO solved(user_id,problem,difficulty) VALUES(?,?,?)",
-                    (session["user_id"], "two-sum", "easy")
-                )
-
-                conn.commit()
-
-            conn.close()
+                results.append("Failed ❌")
 
         os.remove(temp_path)
-
         return jsonify({"results": results})
 
     except Exception as e:
         return jsonify({"results": [str(e)]})
 
 
-# ---------------- RUN SERVER ---------------- #
+# ---------------- RUN ---------------- #
 
 if __name__ == "__main__":
     app.run(debug=True)
