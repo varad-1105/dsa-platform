@@ -62,8 +62,16 @@ font-size:16px;
 font-size:30px;
 color:#ccc;
 cursor:pointer;
+transition:0.2s;
 }
 
+/* hover preview */
+.rating span:hover,
+.rating span:hover ~ span{
+color:gold;
+}
+
+/* selected */
 .rating span.active{
 color:gold;
 }
@@ -109,15 +117,15 @@ font-weight:bold;
 
 <form method="POST">
 
-<div class="rating">
+<div class="rating" id="rating-stars">
 
 <b>Rating:</b><br>
 
-<span onclick="setRating(1)">★</span>
-<span onclick="setRating(2)">★</span>
-<span onclick="setRating(3)">★</span>
-<span onclick="setRating(4)">★</span>
-<span onclick="setRating(5)">★</span>
+<span data-value="1">★</span>
+<span data-value="2">★</span>
+<span data-value="3">★</span>
+<span data-value="4">★</span>
+<span data-value="5">★</span>
 
 </div>
 
@@ -141,21 +149,22 @@ font-weight:bold;
 
 <script>
 
-function setRating(value){
+let stars = document.querySelectorAll("#rating-stars span");
+let ratingInput = document.getElementById("rating-value");
 
-document.getElementById("rating-value").value = value;
+// CLICK
+stars.forEach((star, index) => {
+    star.addEventListener("click", () => {
+        let value = index + 1;
+        ratingInput.value = value;
 
-let stars = document.querySelectorAll(".rating span");
+        stars.forEach(s => s.classList.remove("active"));
 
-stars.forEach((star,index)=>{
-if(index < value){
-star.classList.add("active");
-}else{
-star.classList.remove("active");
-}
+        for(let i = 0; i < value; i++){
+            stars[i].classList.add("active");
+        }
+    });
 });
-
-}
 
 </script>
 
