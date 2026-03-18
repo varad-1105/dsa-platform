@@ -23,7 +23,6 @@ def init_db():
     conn = get_db()
     cursor = conn.cursor()
 
-    # USERS TABLE
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +31,6 @@ def init_db():
     )
     """)
 
-    # SOLVED TABLE
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS solved(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,7 +40,6 @@ def init_db():
     )
     """)
 
-    # 🔥 FEEDBACK TABLE
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS feedback(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -181,6 +178,31 @@ def feedback():
         return render_template("feedback.html", success=True)
 
     return render_template("feedback.html", success=False)
+
+
+# ---------------- 🔐 ADMIN FEEDBACK (ONLY YOU) ---------------- #
+
+@app.route("/admin-feedback")
+def admin_feedback():
+
+    # 🔐 Only YOU can access
+    if "username" not in session or session["username"] != "Varad":
+        return "Access Denied ❌"
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    feedbacks = cursor.execute("""
+        SELECT users.username, feedback.rating, feedback.message
+        FROM feedback
+        LEFT JOIN users
+        ON feedback.user_id = users.id
+        ORDER BY feedback.id DESC
+    """).fetchall()
+
+    conn.close()
+
+    return render_template("admin_feedback.html", feedbacks=feedbacks)
 
 
 # ---------------- PROGRESS ---------------- #
