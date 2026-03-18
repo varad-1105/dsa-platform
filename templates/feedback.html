@@ -65,13 +65,12 @@ cursor:pointer;
 transition:0.2s;
 }
 
-/* hover preview */
-.rating span:hover,
-.rating span:hover ~ span{
+/* hover effect */
+.rating span:hover{
 color:gold;
 }
 
-/* selected */
+/* selected stars */
 .rating span.active{
 color:gold;
 }
@@ -117,15 +116,15 @@ font-weight:bold;
 
 <form method="POST">
 
-<div class="rating" id="rating-stars">
+<div class="rating" id="stars">
 
 <b>Rating:</b><br>
 
-<span data-value="1">★</span>
-<span data-value="2">★</span>
-<span data-value="3">★</span>
-<span data-value="4">★</span>
-<span data-value="5">★</span>
+<span>★</span>
+<span>★</span>
+<span>★</span>
+<span>★</span>
+<span>★</span>
 
 </div>
 
@@ -149,21 +148,26 @@ font-weight:bold;
 
 <script>
 
-let stars = document.querySelectorAll("#rating-stars span");
+let stars = document.querySelectorAll("#stars span");
 let ratingInput = document.getElementById("rating-value");
 
-// CLICK
 stars.forEach((star, index) => {
+
     star.addEventListener("click", () => {
+
         let value = index + 1;
         ratingInput.value = value;
 
+        // clear all
         stars.forEach(s => s.classList.remove("active"));
 
+        // fill left → right
         for(let i = 0; i < value; i++){
             stars[i].classList.add("active");
         }
+
     });
+
 });
 
 </script>
