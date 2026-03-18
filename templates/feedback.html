@@ -7,9 +7,9 @@
 <style>
 
 body{
-font-family: Arial;
+font-family:'Segoe UI',sans-serif;
 margin:0;
-background:#f4f6f8;
+background:linear-gradient(135deg,#dfe9f3,#ffffff);
 }
 
 /* NAVBAR */
@@ -30,67 +30,91 @@ font-size:18px;
 /* CONTAINER */
 
 .container{
-width:50%;
-margin:auto;
-margin-top:60px;
+display:flex;
+justify-content:center;
+align-items:center;
+height:85vh;
 }
 
 /* CARD */
 
 .card{
 background:white;
-padding:30px;
-border-radius:10px;
-box-shadow:0 4px 12px rgba(0,0,0,0.1);
+padding:40px;
+width:400px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+text-align:center;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+/* TITLE */
+
+h2{
+margin-bottom:20px;
+color:#2c3e50;
+}
+
+/* ⭐ STARS */
+
+.rating{
+display:flex;
+justify-content:center;
+gap:8px;
+margin:20px 0;
+}
+
+.star{
+font-size:35px;
+color:#ccc;
+cursor:pointer;
+transition:0.2s;
+}
+
+.star:hover,
+.star.active{
+color:gold;
+transform:scale(1.2);
 }
 
 /* TEXTAREA */
 
 textarea{
 width:100%;
-height:120px;
+height:100px;
 padding:10px;
-margin-top:10px;
-border-radius:6px;
+border-radius:8px;
 border:1px solid #ccc;
-font-size:16px;
-}
-
-/* ⭐ STAR RATING */
-
-.rating span{
-font-size:30px;
-color:#ccc;
-cursor:pointer;
-transition:0.2s;
-}
-
-/* hover effect */
-.rating span:hover{
-color:gold;
-}
-
-/* selected stars */
-.rating span.active{
-color:gold;
+font-size:15px;
+margin-top:10px;
 }
 
 /* BUTTON */
 
 button{
-padding:12px 20px;
-background:#3498db;
+margin-top:20px;
+padding:12px 25px;
+background:linear-gradient(90deg,#3498db,#2980b9);
 color:white;
 border:none;
-border-radius:6px;
+border-radius:8px;
+font-size:16px;
 cursor:pointer;
-margin-top:15px;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
 }
 
 /* SUCCESS */
 
 .success{
-color:green;
+color:#27ae60;
 margin-top:15px;
 font-weight:bold;
 }
@@ -112,34 +136,30 @@ font-weight:bold;
 
 <div class="card">
 
-<h2>Give Feedback 💬</h2>
+<h2>💬 Share Your Feedback</h2>
 
 <form method="POST">
 
-<div class="rating" id="stars">
+<div class="rating">
 
-<b>Rating:</b><br>
-
-<span>★</span>
-<span>★</span>
-<span>★</span>
-<span>★</span>
-<span>★</span>
+<span class="star" onclick="setRating(1)">★</span>
+<span class="star" onclick="setRating(2)">★</span>
+<span class="star" onclick="setRating(3)">★</span>
+<span class="star" onclick="setRating(4)">★</span>
+<span class="star" onclick="setRating(5)">★</span>
 
 </div>
 
 <input type="hidden" name="rating" id="rating-value">
 
-<b>Message:</b>
+<textarea name="message" placeholder="Tell us what you think..."></textarea>
 
-<textarea name="message" placeholder="Write your feedback..."></textarea>
-
-<button type="submit">Submit Feedback</button>
+<button type="submit">Submit 🚀</button>
 
 </form>
 
 {% if success %}
-<p class="success">✅ Feedback submitted successfully!</p>
+<p class="success">✅ Thanks for your feedback!</p>
 {% endif %}
 
 </div>
@@ -148,27 +168,21 @@ font-weight:bold;
 
 <script>
 
-let stars = document.querySelectorAll("#stars span");
-let ratingInput = document.getElementById("rating-value");
+function setRating(value){
 
-stars.forEach((star, index) => {
+document.getElementById("rating-value").value = value;
 
-    star.addEventListener("click", () => {
+let stars = document.querySelectorAll(".star");
 
-        let value = index + 1;
-        ratingInput.value = value;
-
-        // clear all
-        stars.forEach(s => s.classList.remove("active"));
-
-        // fill left → right
-        for(let i = 0; i < value; i++){
-            stars[i].classList.add("active");
-        }
-
-    });
-
+stars.forEach((star,index)=>{
+if(index < value){
+star.classList.add("active");
+}else{
+star.classList.remove("active");
+}
 });
+
+}
 
 </script>
 
