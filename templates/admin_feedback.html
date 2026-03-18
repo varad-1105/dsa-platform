@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Admin Feedback</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background:#f4f6f8;
+}
+
+/* NAVBAR */
+
+.navbar{
+background:#2c3e50;
+padding:15px;
+text-align:center;
+color:white;
+font-size:20px;
+}
+
+/* CONTAINER */
+
+.container{
+width:70%;
+margin:auto;
+margin-top:40px;
+}
+
+/* CARD */
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+margin-bottom:15px;
+}
+
+/* RATING */
+
+.rating{
+color:gold;
+font-size:18px;
+margin-bottom:5px;
+}
+
+/* MESSAGE */
+
+.message{
+font-size:16px;
+color:#333;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+🔐 Admin Feedback Panel
+</div>
+
+<div class="container">
+
+{% for f in feedbacks %}
+
+<div class="card">
+
+<b>User:</b> {{ f.username }} <br><br>
+
+<div class="rating">
+Rating:
+{% for i in range(f.rating) %}
+★
+{% endfor %}
+</div>
+
+<div class="message">
+{{ f.message }}
+</div>
+
+</div>
+
+{% endfor %}
+
+{% if feedbacks|length == 0 %}
+<p>No feedback yet 😢</p>
+{% endif %}
+
+</div>
+
+</body>
+
+</html>
