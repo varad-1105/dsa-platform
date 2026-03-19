@@ -42,6 +42,11 @@ position:relative;
 color:white;
 text-decoration:none;
 font-size:18px;
+font-weight:500;
+}
+
+.navbar a:hover{
+color:#1abc9c;
 }
 
 .dark-toggle{
@@ -64,34 +69,50 @@ padding:120px 20px 80px;
 }
 
 .hero h1{
-font-size:50px;
+font-size:52px;
 background:linear-gradient(90deg,#3498db,#1abc9c);
 -webkit-background-clip:text;
 color:transparent;
+margin-bottom:20px;
 }
 
 .hero p{
 font-size:20px;
 color:#555;
+margin-bottom:40px;
+}
+
+body.dark .hero p{
+color:#ccc;
 }
 
 /* BUTTONS */
 
 .btn{
 padding:14px 30px;
+font-size:18px;
 border:none;
 border-radius:8px;
 cursor:pointer;
 margin:10px;
+transition:0.3s;
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 
 .btn-primary{
-background:#3498db;
+background:linear-gradient(90deg,#3498db,#2980b9);
 color:white;
 }
 
 .btn-secondary{
-background:#1abc9c;
+background:linear-gradient(90deg,#1abc9c,#16a085);
+color:white;
+}
+
+/* SUPPORT BUTTON */
+
+.btn-support{
+background:#f39c12;
 color:white;
 }
 
@@ -102,7 +123,7 @@ display:flex;
 justify-content:center;
 gap:30px;
 flex-wrap:wrap;
-padding:40px;
+padding:40px 20px 80px 20px;
 }
 
 .feature-card{
@@ -111,64 +132,39 @@ width:260px;
 padding:30px;
 border-radius:12px;
 box-shadow:0 6px 18px rgba(0,0,0,0.12);
-}
-
-/* 💰 DONATION SECTION */
-
-.donation{
-display:flex;
-justify-content:center;
-padding:60px 20px;
-}
-
-.donation-card{
-background:white;
-padding:30px;
-border-radius:15px;
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
 text-align:center;
-width:350px;
+transition:0.3s;
+border-top:5px solid #3498db;
 }
 
-.donation-card h2{
-margin-bottom:10px;
-color:#2c3e50;
+body.dark .feature-card{
+background:#2b2b2b;
 }
 
-.donation-card p{
-color:#555;
-font-size:15px;
+.feature-card:nth-child(2){
+border-top:5px solid #1abc9c;
 }
 
-.qr{
-width:200px;
-margin:15px 0;
-border-radius:10px;
+.feature-card:nth-child(3){
+border-top:5px solid #9b59b6;
 }
 
-.upi-box{
-background:#f4f6f8;
-padding:10px;
-border-radius:8px;
-margin-top:10px;
-font-size:14px;
+.feature-card:nth-child(4){
+border-top:5px solid #f39c12;
 }
 
-.copy-btn{
-margin-top:10px;
-padding:8px 15px;
-border:none;
-background:#1abc9c;
-color:white;
-border-radius:6px;
-cursor:pointer;
-}
+/* FOOTER */
 
 .footer{
 text-align:center;
 padding:25px;
 background:#2c3e50;
 color:white;
+font-size:14px;
+}
+
+body.dark .footer{
+background:#1f1f1f;
 }
 
 </style>
@@ -178,6 +174,7 @@ color:white;
 <body>
 
 <div class="navbar">
+
 <a href="/">Home</a>
 <a href="/learn">Learn</a>
 <a href="/problems">Problems</a>
@@ -190,51 +187,54 @@ color:white;
 <a href="/login">Login</a>
 {% endif %}
 
-<button class="dark-toggle" onclick="toggleTheme()">🌙</button>
+<button class="dark-toggle" onclick="toggleTheme()">🌙 Dark</button>
+
 </div>
+
 
 <div class="hero">
-<h1>Master DSA for Coding Interviews</h1>
-<p>Practice the <b>Top 100 curated DSA problems</b></p>
 
-<a href="/learn"><button class="btn btn-primary">Start Learning</button></a>
-<a href="/problems"><button class="btn btn-secondary">Solve Problems</button></a>
+<h1>Master DSA for Coding Interviews</h1>
+
+<p>Practice the <b>Top 100 curated DSA problems</b> asked in real tech interviews.</p>
+
+<a href="/learn">
+<button class="btn btn-primary">Start Learning</button>
+</a>
+
+<a href="/problems">
+<button class="btn btn-secondary">Solve Problems</button>
+</a>
+
+<br>
+
+<a href="/support">
+<button class="btn btn-support">❤️ Support</button>
+</a>
+
 </div>
+
 
 <div class="features">
-<div class="feature-card">100 Curated Problems</div>
-<div class="feature-card">Code Editor</div>
-<div class="feature-card">Track Progress</div>
-<div class="feature-card">Hints & Solutions</div>
+
+<div class="feature-card">
+<h3>100 Curated Problems</h3>
+<p>Focus only on the most important DSA interview questions.</p>
 </div>
 
-<!-- 💰 DONATION SECTION -->
-
-<div class="donation">
-
-<div class="donation-card">
-
-<h2>❤️ Support This Project</h2>
-
-<p>
-If this platform helped you in your preparation,
-you can support its development ☕  
-(Completely optional 🙌)
-</p>
-
-<!-- ⚠️ Put your QR image in static folder -->
-<img src="/static/qr.png" class="qr">
-
-<div class="upi-box">
-UPI ID: <b id="upi">9730617247@pthdfc</b>
+<div class="feature-card">
+<h3>Interactive Code Editor</h3>
+<p>Write and run code directly inside the browser.</p>
 </div>
 
-<button class="copy-btn" onclick="copyUPI()">Copy UPI</button>
+<div class="feature-card">
+<h3>Track Your Progress</h3>
+<p>Monitor solved problems and stay consistent.</p>
+</div>
 
-<p style="margin-top:10px;font-size:13px;color:#777;">
-Even ₹1 support means a lot ❤️
-</p>
-
+<div class="feature-card">
+<h3>Hints & Solutions</h3>
+<p>Get hints when stuck and optimized solutions.</p>
 </div>
 
 </div>
@@ -243,19 +243,27 @@ Even ₹1 support means a lot ❤️
 DSA Platform • Built with ❤️ by Varad
 </div>
 
+
 <script>
 
-function toggleTheme(){
-document.body.classList.toggle("dark");
+if(localStorage.getItem("theme") === "dark"){
+document.body.classList.add("dark")
 }
 
-function copyUPI(){
-let upi = document.getElementById("upi").innerText;
-navigator.clipboard.writeText(upi);
-alert("UPI Copied ✅");
+function toggleTheme(){
+
+document.body.classList.toggle("dark")
+
+if(document.body.classList.contains("dark")){
+localStorage.setItem("theme","dark")
+}else{
+localStorage.setItem("theme","light")
+}
+
 }
 
 </script>
 
 </body>
+
 </html>
