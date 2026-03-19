@@ -2,27 +2,25 @@
 <html>
 
 <head>
-    <!-- Google tag (gtag.js) -->
+<!-- Google tag -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-LB7BM5759H"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LB7BM5759H');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-LB7BM5759H');
 </script>
+
 <title>DSA Platform</title>
 
 <style>
 
 body{
-font-family: 'Segoe UI', Arial, sans-serif;
+font-family:'Segoe UI', Arial, sans-serif;
 margin:0;
 background:linear-gradient(135deg,#f0f4ff,#e8f5ff);
 transition:0.3s;
 }
-
-/* DARK MODE */
 
 body.dark{
 background:#121212;
@@ -37,27 +35,14 @@ padding:18px;
 display:flex;
 justify-content:center;
 gap:40px;
-box-shadow:0 2px 8px rgba(0,0,0,0.15);
 position:relative;
-}
-
-body.dark .navbar{
-background:#1f1f1f;
 }
 
 .navbar a{
 color:white;
 text-decoration:none;
 font-size:18px;
-font-weight:500;
-transition:0.3s;
 }
-
-.navbar a:hover{
-color:#1abc9c;
-}
-
-/* DARK MODE BUTTON */
 
 .dark-toggle{
 position:absolute;
@@ -69,54 +54,44 @@ border-radius:6px;
 background:#1abc9c;
 color:white;
 cursor:pointer;
-font-size:14px;
 }
 
-/* HERO SECTION */
+/* HERO */
 
 .hero{
 text-align:center;
-padding:120px 20px 80px 20px;
+padding:120px 20px 80px;
 }
 
 .hero h1{
-font-size:52px;
+font-size:50px;
 background:linear-gradient(90deg,#3498db,#1abc9c);
 -webkit-background-clip:text;
 color:transparent;
-margin-bottom:20px;
 }
 
 .hero p{
 font-size:20px;
 color:#555;
-margin-bottom:40px;
-}
-
-body.dark .hero p{
-color:#ccc;
 }
 
 /* BUTTONS */
 
 .btn{
 padding:14px 30px;
-font-size:18px;
 border:none;
 border-radius:8px;
 cursor:pointer;
 margin:10px;
-transition:0.3s;
-box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 
 .btn-primary{
-background:linear-gradient(90deg,#3498db,#2980b9);
+background:#3498db;
 color:white;
 }
 
 .btn-secondary{
-background:linear-gradient(90deg,#1abc9c,#16a085);
+background:#1abc9c;
 color:white;
 }
 
@@ -127,7 +102,7 @@ display:flex;
 justify-content:center;
 gap:30px;
 flex-wrap:wrap;
-padding:40px 20px 80px 20px;
+padding:40px;
 }
 
 .feature-card{
@@ -136,39 +111,64 @@ width:260px;
 padding:30px;
 border-radius:12px;
 box-shadow:0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* 💰 DONATION SECTION */
+
+.donation{
+display:flex;
+justify-content:center;
+padding:60px 20px;
+}
+
+.donation-card{
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
 text-align:center;
-transition:0.3s;
-border-top:5px solid #3498db;
+width:350px;
 }
 
-body.dark .feature-card{
-background:#2b2b2b;
+.donation-card h2{
+margin-bottom:10px;
+color:#2c3e50;
 }
 
-.feature-card:nth-child(2){
-border-top:5px solid #1abc9c;
+.donation-card p{
+color:#555;
+font-size:15px;
 }
 
-.feature-card:nth-child(3){
-border-top:5px solid #9b59b6;
+.qr{
+width:200px;
+margin:15px 0;
+border-radius:10px;
 }
 
-.feature-card:nth-child(4){
-border-top:5px solid #f39c12;
+.upi-box{
+background:#f4f6f8;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+font-size:14px;
 }
 
-/* FOOTER */
+.copy-btn{
+margin-top:10px;
+padding:8px 15px;
+border:none;
+background:#1abc9c;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
 
 .footer{
 text-align:center;
 padding:25px;
 background:#2c3e50;
 color:white;
-font-size:14px;
-}
-
-body.dark .footer{
-background:#1f1f1f;
 }
 
 </style>
@@ -178,7 +178,6 @@ background:#1f1f1f;
 <body>
 
 <div class="navbar">
-
 <a href="/">Home</a>
 <a href="/learn">Learn</a>
 <a href="/problems">Problems</a>
@@ -191,81 +190,72 @@ background:#1f1f1f;
 <a href="/login">Login</a>
 {% endif %}
 
-<button class="dark-toggle" onclick="toggleTheme()">🌙 Dark</button>
-
+<button class="dark-toggle" onclick="toggleTheme()">🌙</button>
 </div>
-
 
 <div class="hero">
-
 <h1>Master DSA for Coding Interviews</h1>
+<p>Practice the <b>Top 100 curated DSA problems</b></p>
 
-<p>Practice the <b>Top 100 curated DSA problems</b> asked in real tech interviews.</p>
-
-<a href="/learn">
-<button class="btn btn-primary">Start Learning</button>
-</a>
-
-<a href="/problems">
-<button class="btn btn-secondary">Solve Problems</button>
-</a>
-
+<a href="/learn"><button class="btn btn-primary">Start Learning</button></a>
+<a href="/problems"><button class="btn btn-secondary">Solve Problems</button></a>
 </div>
-
 
 <div class="features">
-
-<div class="feature-card">
-<h3>100 Curated Problems</h3>
-<p>Focus only on the most important DSA interview questions.</p>
+<div class="feature-card">100 Curated Problems</div>
+<div class="feature-card">Code Editor</div>
+<div class="feature-card">Track Progress</div>
+<div class="feature-card">Hints & Solutions</div>
 </div>
 
-<div class="feature-card">
-<h3>Interactive Code Editor</h3>
-<p>Write and run code directly inside the browser.</p>
+<!-- 💰 DONATION SECTION -->
+
+<div class="donation">
+
+<div class="donation-card">
+
+<h2>❤️ Support This Project</h2>
+
+<p>
+If this platform helped you in your preparation,
+you can support its development ☕  
+(Completely optional 🙌)
+</p>
+
+<!-- ⚠️ Put your QR image in static folder -->
+<img src="/static/qr.png" class="qr">
+
+<div class="upi-box">
+UPI ID: <b id="upi">9730617247@pthdfc</b>
 </div>
 
-<div class="feature-card">
-<h3>Track Your Progress</h3>
-<p>Monitor solved problems and stay consistent.</p>
-</div>
+<button class="copy-btn" onclick="copyUPI()">Copy UPI</button>
 
-<div class="feature-card">
-<h3>Hints & Solutions</h3>
-<p>Get hints when stuck and optimized solutions.</p>
+<p style="margin-top:10px;font-size:13px;color:#777;">
+Even ₹1 support means a lot ❤️
+</p>
+
 </div>
 
 </div>
 
 <div class="footer">
-DSA Platform • Built for Interview Preparation
+DSA Platform • Built with ❤️ by Varad
 </div>
-
 
 <script>
 
-/* APPLY SAVED THEME */
-
-if(localStorage.getItem("theme") === "dark"){
-document.body.classList.add("dark")
-}
-
-/* TOGGLE DARK MODE */
-
 function toggleTheme(){
-
-document.body.classList.toggle("dark")
-
-if(document.body.classList.contains("dark")){
-localStorage.setItem("theme","dark")
-}else{
-localStorage.setItem("theme","light")
+document.body.classList.toggle("dark");
 }
 
+function copyUPI(){
+let upi = document.getElementById("upi").innerText;
+navigator.clipboard.writeText(upi);
+alert("UPI Copied ✅");
 }
 
 </script>
 
 </body>
-
 </html>
