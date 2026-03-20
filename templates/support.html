@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Support</title>
+
+<style>
+
+body{
+font-family:'Segoe UI', sans-serif;
+margin:0;
+background:linear-gradient(135deg,#f0f4ff,#e8f5ff);
+}
+
+.navbar{
+background:#2c3e50;
+padding:15px;
+text-align:center;
+}
+
+.navbar a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+font-size:18px;
+}
+
+.container{
+display:flex;
+justify-content:center;
+align-items:center;
+height:80vh;
+}
+
+.card{
+background:white;
+padding:40px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+text-align:center;
+width:400px;
+}
+
+h2{
+color:#2c3e50;
+}
+
+.qr{
+display:none;
+width:200px;
+margin:15px auto;
+border-radius:10px;
+}
+
+button{
+padding:12px 20px;
+margin-top:15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#3498db;
+color:white;
+}
+
+.upi{
+margin-top:10px;
+font-size:14px;
+background:#f4f6f8;
+padding:10px;
+border-radius:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+<a href="/">Home</a>
+<a href="/feedback">Feedback</a>
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>❤️ Support This Project</h2>
+
+<p>
+If this platform helped you, you can support its development.  
+Totally optional 🙌
+</p>
+
+<button onclick="showQR()">Show QR</button>
+
+<img src="/static/qr.png" class="qr" id="qr">
+
+<div class="upi">
+UPI: <b id="upi">9730617247@pthdfc</b>
+</div>
+
+<button onclick="copyUPI()">Copy UPI</button>
+
+<p style="margin-top:10px;color:#777;">
+Even small support means a lot ❤️
+</p>
+
+</div>
+
+</div>
+
+<script>
+
+function showQR(){
+document.getElementById("qr").style.display = "block";
+}
+
+function copyUPI(){
+let upi = document.getElementById("upi").innerText;
+navigator.clipboard.writeText(upi);
+alert("UPI Copied ✅");
+}
+
+</script>
+
+</body>
+
+</html>
