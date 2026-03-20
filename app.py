@@ -23,6 +23,7 @@ def init_db():
     conn = get_db()
     cursor = conn.cursor()
 
+    # USERS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,6 +32,7 @@ def init_db():
     )
     """)
 
+    # SOLVED
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS solved(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +42,7 @@ def init_db():
     )
     """)
 
+    # FEEDBACK
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS feedback(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,10 +71,14 @@ def learn():
     return render_template("learn.html")
 
 
-# ---------------- SUPPORT PAGE ---------------- #
+# ---------------- SUPPORT (LOGIN REQUIRED) ---------------- #
 
 @app.route("/support")
 def support():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
     return render_template("support.html")
 
 
