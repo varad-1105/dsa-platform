@@ -68,6 +68,13 @@ def learn():
     return render_template("learn.html")
 
 
+# ---------------- SUPPORT PAGE ---------------- #
+
+@app.route("/support")
+def support():
+    return render_template("support.html")
+
+
 # ---------------- LOGIN ---------------- #
 
 @app.route("/login")
@@ -180,12 +187,11 @@ def feedback():
     return render_template("feedback.html", success=False)
 
 
-# ---------------- 🔐 ADMIN FEEDBACK (ONLY YOU) ---------------- #
+# ---------------- ADMIN FEEDBACK (ONLY YOU) ---------------- #
 
 @app.route("/admin-feedback")
 def admin_feedback():
 
-    # 🔐 Only YOU can access
     if "username" not in session or session["username"] != "Varad":
         return "Access Denied ❌"
 
