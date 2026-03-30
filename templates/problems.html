@@ -2,15 +2,14 @@
 <html>
 
 <head>
-    <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-LB7BM5759H"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LB7BM5759H');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-LB7BM5759H');
 </script>
+
 <title>Problems</title>
 
 <style>
@@ -128,10 +127,6 @@ background:#eaf2f8;
 cursor:pointer;
 }
 
-.solved{
-background:#d4edda;
-}
-
 .problem-left{
 display:flex;
 gap:15px;
@@ -152,17 +147,9 @@ font-size:14px;
 color:white;
 }
 
-.easy{
-background:#27ae60;
-}
-
-.medium{
-background:#f39c12;
-}
-
-.hard{
-background:#e74c3c;
-}
+.easy{ background:#27ae60; }
+.medium{ background:#f39c12; }
+.hard{ background:#e74c3c; }
 
 /* TAGS */
 
@@ -174,7 +161,7 @@ border-radius:6px;
 font-size:12px;
 }
 
-/* COMPANY TAGS */
+/* COMPANY */
 
 .company{
 background:#9b59b6;
@@ -228,15 +215,11 @@ transition:width 0.5s;
 <div class="nav-right">
 
 {% if session.username %}
-
 <a href="/dashboard" style="color:white;">Dashboard</a>
 <span class="username">👤 {{ session.username }}</span>
 <a href="/logout" class="logout-btn">Logout</a>
-
 {% else %}
-
 <a href="/login" style="color:white;">Login</a>
-
 {% endif %}
 
 </div>
@@ -255,18 +238,12 @@ Solved: 0 / 100
 <div class="progress-fill" id="progress-fill"></div>
 </div>
 
-<input
-type="text"
-class="search"
-id="searchBox"
-placeholder="Search problems..."
-onkeyup="searchProblems()"
-/>
+<input type="text" class="search" id="searchBox"
+placeholder="Search problems..." onkeyup="searchProblems()"/>
 
 <div class="filters">
 
 <b>Difficulty:</b><br>
-
 <button class="filter-btn" onclick="filterDifficulty('all')">All</button>
 <button class="filter-btn" onclick="filterDifficulty('easy')">Easy</button>
 <button class="filter-btn" onclick="filterDifficulty('medium')">Medium</button>
@@ -275,147 +252,88 @@ onkeyup="searchProblems()"
 <br><br>
 
 <b>Companies:</b><br>
-
 <button class="filter-btn" onclick="filterCompany('all')">All</button>
 <button class="filter-btn" onclick="filterCompany('google')">Google</button>
 <button class="filter-btn" onclick="filterCompany('amazon')">Amazon</button>
-<button class="filter-btn" onclick="filterCompany('microsoft')">Microsoft</button>
 
 </div>
 
+<!-- 🔥 DYNAMIC PROBLEMS -->
 
-<a href="/two-sum">
+{% for q in questions %}
 
-<div class="problem easy google amazon microsoft" id="two-sum-problem">
+<div class="problem {{ q.difficulty|lower }} {{ q.company|lower }}">
 
 <div class="problem-left">
 
-<span class="problem-name">1. Two Sum</span>
+<span class="problem-name">{{ loop.index }}. {{ q.title }}</span>
 
-<span class="difficulty easy">Easy</span>
+<span class="difficulty {{ q.difficulty|lower }}">
+{{ q.difficulty }}
+</span>
 
-<span class="tag">Array</span>
-<span class="tag">HashMap</span>
+<span class="tag">{{ q.topic }}</span>
 
-<span class="tag company">Google</span>
-<span class="tag company">Amazon</span>
-<span class="tag company">Microsoft</span>
-
-</div>
-
-<span class="status" id="two-sum-status">❌ Unsolved</span>
+<span class="tag company">{{ q.company }}</span>
 
 </div>
 
-</a>
+<span class="status">❌ Unsolved</span>
+
+</div>
+
+{% endfor %}
 
 </div>
 
 <script>
 
-/* PROGRESS */
-
 fetch("/progress")
 .then(res => res.json())
 .then(data => {
-
 document.getElementById("progress").innerText =
 "Solved: " + data.solved + " / " + data.total;
 
 let percent = (data.solved / data.total) * 100;
-
-document.getElementById("progress-fill").style.width =
-percent + "%";
-
+document.getElementById("progress-fill").style.width = percent + "%";
 });
 
 
-/* SHOW SOLVED STATUS */
-
-fetch("/progress")
-.then(res => res.json())
-.then(data => {
-
-if(data.solved > 0){
-
-document.getElementById("two-sum-status").innerText = "✅ Solved"
-document.getElementById("two-sum-problem").classList.add("solved")
-
-}
-
-})
-
-
-/* SEARCH */
-
 function searchProblems(){
-
 let input = document.getElementById("searchBox").value.toLowerCase();
-
 let problems = document.getElementsByClassName("problem");
 
 for(let i=0;i<problems.length;i++){
-
 let name = problems[i].innerText.toLowerCase();
+problems[i].style.display = name.includes(input) ? "flex" : "none";
+}
+}
 
-if(name.includes(input)){
+function filterDifficulty(level){
+let problems = document.getElementsByClassName("problem");
+
+for(let i=0;i<problems.length;i++){
+if(level === "all" || problems[i].classList.contains(level)){
 problems[i].style.display = "flex";
 }else{
 problems[i].style.display = "none";
 }
-
 }
-
 }
-
-
-/* DIFFICULTY FILTER */
-
-function filterDifficulty(level){
-
-let problems = document.getElementsByClassName("problem");
-
-for(let i=0;i<problems.length;i++){
-
-if(level === "all"){
-problems[i].style.display = "flex";
-}
-else if(problems[i].classList.contains(level)){
-problems[i].style.display = "flex";
-}
-else{
-problems[i].style.display = "none";
-}
-
-}
-
-}
-
-
-/* COMPANY FILTER */
 
 function filterCompany(company){
-
 let problems = document.getElementsByClassName("problem");
 
 for(let i=0;i<problems.length;i++){
-
-if(company === "all"){
+if(company === "all" || problems[i].classList.contains(company)){
 problems[i].style.display = "flex";
-}
-else if(problems[i].classList.contains(company)){
-problems[i].style.display = "flex";
-}
-else{
+}else{
 problems[i].style.display = "none";
 }
-
 }
-
 }
 
 </script>
 
 </body>
-
 </html>
