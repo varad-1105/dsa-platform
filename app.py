@@ -52,11 +52,112 @@ def init_db():
     )
     """)
 
+    # QUESTIONS
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS questions(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        topic TEXT,
+        difficulty TEXT,
+        company TEXT
+    )
+    """)
+
     conn.commit()
     conn.close()
 
 
 init_db()
+
+
+# ---------------- INSERT QUESTIONS ---------------- #
+
+def seed_questions():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # 🔥 FIX: clear old data once
+    cursor.execute("DELETE FROM questions")
+
+    questions = [
+
+        # ARRAYS
+        ("Two Sum", "Arrays", "Easy", "Google, Amazon"),
+        ("Contains Duplicate", "Arrays", "Easy", "Amazon"),
+        ("Valid Anagram", "Arrays", "Easy", "Google"),
+        ("Group Anagrams", "Arrays", "Medium", "Amazon"),
+        ("Top K Frequent Elements", "Arrays", "Medium", "Facebook"),
+        ("Product of Array Except Self", "Arrays", "Medium", "Amazon"),
+        ("Longest Consecutive Sequence", "Arrays", "Hard", "Google"),
+
+        # TWO POINTERS
+        ("Valid Parentheses", "Two Pointers", "Easy", "Amazon"),
+        ("Two Sum II", "Two Pointers", "Easy", "Google"),
+        ("3Sum", "Two Pointers", "Medium", "Facebook"),
+        ("Container With Most Water", "Two Pointers", "Medium", "Amazon"),
+        ("Trapping Rain Water", "Two Pointers", "Hard", "Google"),
+
+        # SLIDING WINDOW
+        ("Best Time to Buy and Sell Stock", "Sliding Window", "Easy", "Amazon"),
+        ("Longest Substring Without Repeating Characters", "Sliding Window", "Medium", "Google"),
+        ("Permutation in String", "Sliding Window", "Medium", "Facebook"),
+        ("Minimum Window Substring", "Sliding Window", "Hard", "Google"),
+        ("Sliding Window Maximum", "Sliding Window", "Hard", "Amazon"),
+
+        # STACK
+        ("Valid Parentheses", "Stack", "Easy", "Amazon"),
+        ("Min Stack", "Stack", "Medium", "Google"),
+        ("Evaluate Reverse Polish Notation", "Stack", "Medium", "Amazon"),
+        ("Generate Parentheses", "Stack", "Medium", "Google"),
+        ("Daily Temperatures", "Stack", "Medium", "Amazon"),
+        ("Car Fleet", "Stack", "Medium", "Google"),
+        ("Largest Rectangle in Histogram", "Stack", "Hard", "Amazon"),
+
+        # BINARY SEARCH
+        ("Binary Search", "Binary Search", "Easy", "Google"),
+        ("Search a 2D Matrix", "Binary Search", "Medium", "Amazon"),
+        ("Koko Eating Bananas", "Binary Search", "Medium", "Google"),
+        ("Find Minimum in Rotated Sorted Array", "Binary Search", "Medium", "Amazon"),
+        ("Search in Rotated Sorted Array", "Binary Search", "Medium", "Google"),
+        ("Time Based Key Value Store", "Binary Search", "Medium", "Amazon"),
+        ("Median of Two Sorted Arrays", "Binary Search", "Hard", "Google"),
+
+        # LINKED LIST
+        ("Reverse Linked List", "Linked List", "Easy", "Amazon"),
+        ("Merge Two Sorted Lists", "Linked List", "Easy", "Google"),
+        ("Linked List Cycle", "Linked List", "Easy", "Facebook"),
+        ("Reorder List", "Linked List", "Medium", "Amazon"),
+        ("Remove Nth Node From End", "Linked List", "Medium", "Google"),
+        ("Copy List With Random Pointer", "Linked List", "Medium", "Amazon"),
+        ("Add Two Numbers", "Linked List", "Medium", "Google"),
+        ("LRU Cache", "Linked List", "Hard", "Amazon"),
+        ("Merge K Sorted Lists", "Linked List", "Hard", "Google"),
+        ("Reverse Nodes in K Group", "Linked List", "Hard", "Amazon"),
+
+        # TREES
+        ("Maximum Depth of Binary Tree", "Trees", "Easy", "Google"),
+        ("Diameter of Binary Tree", "Trees", "Easy", "Amazon"),
+        ("Balanced Binary Tree", "Trees", "Easy", "Google"),
+        ("Same Tree", "Trees", "Easy", "Amazon"),
+        ("Subtree of Another Tree", "Trees", "Easy", "Facebook"),
+        ("Lowest Common Ancestor of BST", "Trees", "Medium", "Google"),
+        ("Binary Tree Level Order Traversal", "Trees", "Medium", "Amazon"),
+        ("Binary Tree Right Side View", "Trees", "Medium", "Google"),
+        ("Validate Binary Search Tree", "Trees", "Medium", "Amazon"),
+        ("Kth Smallest Element in BST", "Trees", "Medium", "Google"),
+        ("Binary Tree Maximum Path Sum", "Trees", "Hard", "Amazon"),
+    ]
+
+    cursor.executemany(
+        "INSERT INTO questions(title, topic, difficulty, company) VALUES (?,?,?,?)",
+        questions
+    )
+
+    conn.commit()
+    conn.close()
+
+
+seed_questions()
 
 
 # ---------------- HOME ---------------- #
@@ -71,14 +172,12 @@ def learn():
     return render_template("learn.html")
 
 
-# ---------------- SUPPORT (LOGIN REQUIRED) ---------------- #
+# ---------------- SUPPORT ---------------- #
 
 @app.route("/support")
 def support():
-
     if "user_id" not in session:
         return redirect("/login")
-
     return render_template("support.html")
 
 
@@ -154,136 +253,18 @@ def dashboard():
 
 @app.route("/problems")
 def problems():
-    if "user_id" not in session:
-        return redirect("/login")
-    return render_template("problems.html")
-
-
-@app.route("/two-sum")
-def two_sum():
-    if "user_id" not in session:
-        return redirect("/login")
-    return render_template("two_sum.html")
-
-
-# ---------------- FEEDBACK ---------------- #
-
-@app.route("/feedback", methods=["GET", "POST"])
-def feedback():
 
     if "user_id" not in session:
         return redirect("/login")
-
-    if request.method == "POST":
-        rating = request.form["rating"]
-        message = request.form["message"]
-
-        conn = get_db()
-        cursor = conn.cursor()
-
-        cursor.execute(
-            "INSERT INTO feedback(user_id, rating, message) VALUES(?,?,?)",
-            (session["user_id"], rating, message)
-        )
-
-        conn.commit()
-        conn.close()
-
-        return render_template("feedback.html", success=True)
-
-    return render_template("feedback.html", success=False)
-
-
-# ---------------- ADMIN FEEDBACK (ONLY YOU) ---------------- #
-
-@app.route("/admin-feedback")
-def admin_feedback():
-
-    if "username" not in session or session["username"] != "Varad":
-        return "Access Denied ❌"
 
     conn = get_db()
     cursor = conn.cursor()
 
-    feedbacks = cursor.execute("""
-        SELECT users.username, feedback.rating, feedback.message
-        FROM feedback
-        LEFT JOIN users
-        ON feedback.user_id = users.id
-        ORDER BY feedback.id DESC
-    """).fetchall()
+    questions = cursor.execute("SELECT * FROM questions").fetchall()
 
     conn.close()
 
-    return render_template("admin_feedback.html", feedbacks=feedbacks)
-
-
-# ---------------- PROGRESS ---------------- #
-
-@app.route("/progress")
-def progress():
-
-    if "user_id" not in session:
-        return jsonify({"solved": 0, "total": 100})
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    solved = cursor.execute(
-        "SELECT COUNT(DISTINCT problem) FROM solved WHERE user_id=?",
-        (session["user_id"],)
-    ).fetchone()[0]
-
-    conn.close()
-
-    return jsonify({
-        "solved": solved,
-        "total": 100
-    })
-
-
-# ---------------- CODE RUNNER ---------------- #
-
-@app.route("/run-code", methods=["POST"])
-def run_code():
-
-    if "user_id" not in session:
-        return jsonify({"results": ["Login required"]})
-
-    code = request.json.get("code")
-
-    test_cases = [
-        {"input": "2 7 11 15\n9", "output": "0 1"},
-        {"input": "3 2 4\n6", "output": "1 2"},
-        {"input": "3 3\n6", "output": "0 1"}
-    ]
-
-    results = []
-
-    try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".py") as temp:
-            temp.write(code.encode())
-            temp_path = temp.name
-
-        for case in test_cases:
-            result = subprocess.run(
-                ["python", temp_path],
-                input=case["input"],
-                text=True,
-                capture_output=True,
-                timeout=5
-            )
-
-            if result.stdout.strip() == case["output"]:
-                results.append("Passed ✅")
-            else:
-                results.append("Failed ❌")
-
-        os.remove(temp_path)
-        return jsonify({"results": results})
-
-    except Exception as e:
-        return jsonify({"results": [str(e)]})
+    return render_template("problems.html", questions=questions)
 
 
 # ---------------- RUN ---------------- #
