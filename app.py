@@ -23,6 +23,7 @@ def init_db():
     conn = get_db()
     cursor = conn.cursor()
 
+    # USERS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,6 +32,7 @@ def init_db():
     )
     """)
 
+    # SOLVED
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS solved(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +42,7 @@ def init_db():
     )
     """)
 
+    # FEEDBACK
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS feedback(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,6 +52,7 @@ def init_db():
     )
     """)
 
+    # QUESTIONS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS questions(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,7 +76,7 @@ def seed_questions():
     conn = get_db()
     cursor = conn.cursor()
 
-    # 🔥 CLEAR OLD DATA (ONLY CHANGE)
+    # 🔥 CLEAR OLD DATA (only for fix)
     cursor.execute("DELETE FROM questions")
 
     questions = [
@@ -160,7 +164,7 @@ def seed_questions():
 seed_questions()
 
 
-# ---------------- ROUTES ---------------- #
+# ---------------- HOME ---------------- #
 
 @app.route("/")
 def home():
@@ -172,12 +176,16 @@ def learn():
     return render_template("learn.html")
 
 
+# ---------------- SUPPORT ---------------- #
+
 @app.route("/support")
 def support():
     if "user_id" not in session:
         return redirect("/login")
     return render_template("support.html")
 
+
+# ---------------- LOGIN ---------------- #
 
 @app.route("/login")
 def login():
@@ -236,12 +244,16 @@ def logout():
     return redirect("/")
 
 
+# ---------------- DASHBOARD ---------------- #
+
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
         return redirect("/login")
     return render_template("dashboard.html")
 
+
+# ---------------- PROBLEMS ---------------- #
 
 @app.route("/problems")
 def problems():
@@ -256,6 +268,69 @@ def problems():
     conn.close()
 
     return render_template("problems.html", questions=questions)
+
+
+# ---------------- PROGRESS (RESTORED) ---------------- #
+
+@app.route("/progress")
+def progress():
+
+    if "user_id" not in session:
+        return jsonify({"solved": 0, "total": 100})
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    solved = cursor.execute(
+        "SELECT COUNT(DISTINCT problem) FROM solved WHERE user_id=?",
+        (session["user_id"],)
+    ).fetchone()[0]
+
+    conn.close()
+
+    return jsonify({
+        "solved": solved,
+        "total": 100
+    })
+
+
+# ---------------- RUN CODE (RESTORED) ---------------- #
+
+@app.route("/run-code", methods=["POST"])
+def run_code():
+
+    if "user_id" not in session:
+        return jsonify({"results": ["Login required"]})
+
+    code = request.json.get("code")
+
+    test_cases = [
+        {"input": "2 7 11 15\n9", "output": "0 1"},
+    ]
+
+    results = []
+
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".py") as temp:
+            temp.write(code.encode())
+            temp_path = temp.name
+
+        for case in test_cases:
+            result = subprocess.run(
+                ["python", temp_path],
+                input=case["input"],
+                text=True,
+                capture_output=True,
+                timeout=5
+            )
+
+            results.append("Passed ✅" if result.stdout.strip() == case["output"] else "Failed ❌")
+
+        os.remove(temp_path)
+        return jsonify({"results": results})
+
+    except Exception as e:
+        return jsonify({"results": [str(e)]})
 
 
 # ---------------- RUN ---------------- #
