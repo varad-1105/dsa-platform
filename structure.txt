@@ -1,0 +1,23 @@
+Folder PATH listing for volume Windows
+Volume serial number is 463B-D231
+C:.
+|   app.py
+|   database.db
+|   requirements.txt
+|   structure.txt
+|   
++---static
+|       qr.png
+|       
+\---templates
+        admin_feedback.html
+        arrays.html
+        dashboard.html
+        feedback.html
+        home.html
+        learn.html
+        login.html
+        problems.html
+        support.html
+        two_sum.html
+        

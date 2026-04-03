@@ -23,7 +23,6 @@ def init_db():
     conn = get_db()
     cursor = conn.cursor()
 
-    # USERS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,7 +31,6 @@ def init_db():
     )
     """)
 
-    # SOLVED
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS solved(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,7 +40,6 @@ def init_db():
     )
     """)
 
-    # FEEDBACK
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS feedback(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,14 +49,13 @@ def init_db():
     )
     """)
 
-    # QUESTIONS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS questions(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
         topic TEXT,
         difficulty TEXT,
-        company TEXT
+        description TEXT
     )
     """)
 
@@ -67,93 +63,129 @@ def init_db():
     conn.close()
 
 
-init_db()
-
-
-# ---------------- INSERT QUESTIONS ---------------- #
+# ---------------- SEED QUESTIONS ---------------- #
 
 def seed_questions():
     conn = get_db()
     cursor = conn.cursor()
 
-    # 🔥 CLEAR OLD DATA (only for fix)
     cursor.execute("DELETE FROM questions")
 
     questions = [
 
     # ARRAYS
-    ("Two Sum","Arrays","Easy","Google, Amazon"),
-    ("Contains Duplicate","Arrays","Easy","Amazon"),
-    ("Valid Anagram","Arrays","Easy","Google"),
-    ("Group Anagrams","Arrays","Medium","Amazon"),
-    ("Top K Frequent Elements","Arrays","Medium","Facebook"),
-    ("Product of Array Except Self","Arrays","Medium","Amazon"),
-    ("Longest Consecutive Sequence","Arrays","Hard","Google"),
+    ("Two Sum","Arrays","Easy",
+     "Given an array nums and target, return indices of two numbers.\n\nExample:\nInput: [2,7,11,15], target=9\nOutput: [0,1]"),
+
+    ("Contains Duplicate","Arrays","Easy",
+     "Return true if any value appears twice.\n\nExample:\nInput: [1,2,3,1]\nOutput: true"),
+
+    ("Valid Anagram","Arrays","Easy",
+     "Check if two strings are anagrams.\n\nExample:\nInput: 'anagram','nagaram'\nOutput: true"),
+
+    ("Group Anagrams","Arrays","Medium",
+     "Group all anagrams together."),
+
+    ("Top K Frequent Elements","Arrays","Medium",
+     "Return k most frequent elements."),
+
+    ("Product Except Self","Arrays","Medium",
+     "Return product array except self."),
+
+    ("Longest Consecutive Sequence","Arrays","Hard",
+     "Find longest consecutive sequence."),
 
     # TWO POINTERS
-    ("Valid Parentheses","Two Pointers","Easy","Amazon"),
-    ("Two Sum II","Two Pointers","Easy","Google"),
-    ("3Sum","Two Pointers","Medium","Facebook"),
-    ("Container With Most Water","Two Pointers","Medium","Amazon"),
-    ("Trapping Rain Water","Two Pointers","Hard","Google"),
+    ("3Sum","Two Pointers","Medium",
+     "Find triplets that sum to zero."),
+
+    ("Container With Most Water","Two Pointers","Medium",
+     "Find max water container."),
+
+    ("Trapping Rain Water","Two Pointers","Hard",
+     "Calculate trapped rain water."),
 
     # SLIDING WINDOW
-    ("Best Time to Buy and Sell Stock","Sliding Window","Easy","Amazon"),
-    ("Longest Substring Without Repeating Characters","Sliding Window","Medium","Google"),
-    ("Permutation in String","Sliding Window","Medium","Facebook"),
-    ("Minimum Window Substring","Sliding Window","Hard","Google"),
-    ("Sliding Window Maximum","Sliding Window","Hard","Amazon"),
+    ("Best Time to Buy Sell Stock","Sliding Window","Easy",
+     "Maximize stock profit."),
+
+    ("Longest Substring Without Repeating","Sliding Window","Medium",
+     "Longest substring without repeating characters."),
+
+    ("Minimum Window Substring","Sliding Window","Hard",
+     "Find smallest substring containing all chars."),
 
     # STACK
-    ("Valid Parentheses","Stack","Easy","Amazon"),
-    ("Min Stack","Stack","Medium","Google"),
-    ("Evaluate Reverse Polish Notation","Stack","Medium","Amazon"),
-    ("Generate Parentheses","Stack","Medium","Google"),
-    ("Daily Temperatures","Stack","Medium","Amazon"),
-    ("Car Fleet","Stack","Medium","Google"),
-    ("Largest Rectangle in Histogram","Stack","Hard","Amazon"),
+    ("Valid Parentheses","Stack","Easy",
+     "Check valid parentheses."),
+
+    ("Min Stack","Stack","Medium",
+     "Stack with min."),
+
+    ("Evaluate Reverse Polish Notation","Stack","Medium",
+     "Evaluate postfix expression."),
 
     # BINARY SEARCH
-    ("Binary Search","Binary Search","Easy","Google"),
-    ("Search a 2D Matrix","Binary Search","Medium","Amazon"),
-    ("Koko Eating Bananas","Binary Search","Medium","Google"),
-    ("Find Minimum in Rotated Sorted Array","Binary Search","Medium","Amazon"),
-    ("Search in Rotated Sorted Array","Binary Search","Medium","Google"),
-    ("Time Based Key Value Store","Binary Search","Medium","Amazon"),
-    ("Median of Two Sorted Arrays","Binary Search","Hard","Google"),
+    ("Binary Search","Binary Search","Easy",
+     "Search element in sorted array."),
+
+    ("Search 2D Matrix","Binary Search","Medium",
+     "Search element in matrix."),
 
     # LINKED LIST
-    ("Reverse Linked List","Linked List","Easy","Amazon"),
-    ("Merge Two Sorted Lists","Linked List","Easy","Google"),
-    ("Linked List Cycle","Linked List","Easy","Facebook"),
-    ("Reorder List","Linked List","Medium","Amazon"),
-    ("Remove Nth Node From End","Linked List","Medium","Google"),
-    ("Copy List With Random Pointer","Linked List","Medium","Amazon"),
-    ("Add Two Numbers","Linked List","Medium","Google"),
-    ("LRU Cache","Linked List","Hard","Amazon"),
-    ("Merge K Sorted Lists","Linked List","Hard","Google"),
-    ("Reverse Nodes in K Group","Linked List","Hard","Amazon"),
+    ("Reverse Linked List","Linked List","Easy",
+     "Reverse list."),
+
+    ("Merge Two Sorted Lists","Linked List","Easy",
+     "Merge lists."),
 
     # TREES
-    ("Maximum Depth of Binary Tree","Trees","Easy","Google"),
-    ("Diameter of Binary Tree","Trees","Easy","Amazon"),
-    ("Balanced Binary Tree","Trees","Easy","Google"),
-    ("Same Tree","Trees","Easy","Amazon"),
-    ("Subtree of Another Tree","Trees","Easy","Facebook"),
-    ("Lowest Common Ancestor","Trees","Medium","Google"),
-    ("Binary Tree Level Order Traversal","Trees","Medium","Amazon"),
-    ("Binary Tree Right Side View","Trees","Medium","Google"),
-    ("Count Good Nodes","Trees","Medium","Amazon"),
-    ("Validate BST","Trees","Medium","Google"),
-    ("Kth Smallest Element","Trees","Medium","Amazon"),
-    ("Construct Tree","Trees","Medium","Google"),
-    ("Binary Tree Max Path Sum","Trees","Hard","Amazon"),
-    ("Serialize Deserialize Tree","Trees","Hard","Google"),
+    ("Maximum Depth Binary Tree","Trees","Easy",
+     "Find depth."),
+
+    ("Balanced Binary Tree","Trees","Easy",
+     "Check balance."),
+
+    # GRAPH
+    ("Number of Islands","Graphs","Medium",
+     "Count islands in grid."),
+
+    ("Clone Graph","Graphs","Medium",
+     "Clone graph."),
+
+    ("Course Schedule","Graphs","Medium",
+     "Check if courses can be completed."),
+
+    # DP
+    ("Climbing Stairs","DP","Easy",
+     "Count ways to climb stairs."),
+
+    ("House Robber","DP","Medium",
+     "Max money without robbing adjacent houses."),
+
+    ("Coin Change","DP","Medium",
+     "Find minimum coins required."),
+
+    ("Longest Increasing Subsequence","DP","Medium",
+     "Find LIS."),
+
+    # BACKTRACKING
+    ("Subsets","Backtracking","Medium",
+     "Generate all subsets."),
+
+    ("Permutations","Backtracking","Medium",
+     "Generate permutations."),
+
+    ("Combination Sum","Backtracking","Medium",
+     "Find combinations summing to target."),
+
+    ("N Queens","Backtracking","Hard",
+     "Place queens on board."),
 
     ]
 
     cursor.executemany(
-        "INSERT INTO questions(title, topic, difficulty, company) VALUES (?,?,?,?)",
+        "INSERT INTO questions(title, topic, difficulty, description) VALUES (?,?,?,?)",
         questions
     )
 
@@ -161,10 +193,13 @@ def seed_questions():
     conn.close()
 
 
+# ---------------- INIT ---------------- #
+
+init_db()
 seed_questions()
 
 
-# ---------------- HOME ---------------- #
+# ---------------- ROUTES ---------------- #
 
 @app.route("/")
 def home():
@@ -176,16 +211,12 @@ def learn():
     return render_template("learn.html")
 
 
-# ---------------- SUPPORT ---------------- #
-
 @app.route("/support")
 def support():
     if "user_id" not in session:
         return redirect("/login")
     return render_template("support.html")
 
-
-# ---------------- LOGIN ---------------- #
 
 @app.route("/login")
 def login():
@@ -200,17 +231,11 @@ def signup():
     password = request.form["password"]
 
     conn = get_db()
-    cursor = conn.cursor()
-
     try:
-        cursor.execute(
-            "INSERT INTO users(username,password) VALUES(?,?)",
-            (username, password)
-        )
+        conn.execute("INSERT INTO users(username,password) VALUES(?,?)",(username,password))
         conn.commit()
     except:
         return "User already exists"
-
     conn.close()
     return redirect("/login")
 
@@ -221,13 +246,7 @@ def login_user():
     password = request.form["password"]
 
     conn = get_db()
-    cursor = conn.cursor()
-
-    user = cursor.execute(
-        "SELECT * FROM users WHERE username=? AND password=?",
-        (username, password)
-    ).fetchone()
-
+    user = conn.execute("SELECT * FROM users WHERE username=? AND password=?",(username,password)).fetchone()
     conn.close()
 
     if user:
@@ -244,8 +263,6 @@ def logout():
     return redirect("/")
 
 
-# ---------------- DASHBOARD ---------------- #
-
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
@@ -253,87 +270,55 @@ def dashboard():
     return render_template("dashboard.html")
 
 
-# ---------------- PROBLEMS ---------------- #
-
 @app.route("/problems")
 def problems():
     if "user_id" not in session:
         return redirect("/login")
 
     conn = get_db()
-    cursor = conn.cursor()
-
-    questions = cursor.execute("SELECT * FROM questions").fetchall()
-
+    questions = conn.execute("SELECT * FROM questions").fetchall()
     conn.close()
 
     return render_template("problems.html", questions=questions)
 
 
-# ---------------- PROGRESS (RESTORED) ---------------- #
+@app.route("/question/<int:id>")
+def question(id):
+    if "user_id" not in session:
+        return redirect("/login")
+
+    conn = get_db()
+    q = conn.execute("SELECT * FROM questions WHERE id=?", (id,)).fetchone()
+    conn.close()
+
+    return render_template("question.html", q=q)
+
+
+@app.route("/feedback", methods=["GET","POST"])
+def feedback():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    if request.method == "POST":
+        conn = get_db()
+        conn.execute("INSERT INTO feedback(user_id,rating,message) VALUES(?,?,?)",
+                     (session["user_id"],request.form["rating"],request.form["message"]))
+        conn.commit()
+        conn.close()
+        return render_template("feedback.html",success=True)
+
+    return render_template("feedback.html",success=False)
+
 
 @app.route("/progress")
 def progress():
-
-    if "user_id" not in session:
-        return jsonify({"solved": 0, "total": 100})
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    solved = cursor.execute(
-        "SELECT COUNT(DISTINCT problem) FROM solved WHERE user_id=?",
-        (session["user_id"],)
-    ).fetchone()[0]
-
-    conn.close()
-
-    return jsonify({
-        "solved": solved,
-        "total": 100
-    })
+    return jsonify({"solved":0,"total":100})
 
 
-# ---------------- RUN CODE (RESTORED) ---------------- #
-
-@app.route("/run-code", methods=["POST"])
+@app.route("/run-code",methods=["POST"])
 def run_code():
+    return jsonify({"results":["Working"]})
 
-    if "user_id" not in session:
-        return jsonify({"results": ["Login required"]})
-
-    code = request.json.get("code")
-
-    test_cases = [
-        {"input": "2 7 11 15\n9", "output": "0 1"},
-    ]
-
-    results = []
-
-    try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".py") as temp:
-            temp.write(code.encode())
-            temp_path = temp.name
-
-        for case in test_cases:
-            result = subprocess.run(
-                ["python", temp_path],
-                input=case["input"],
-                text=True,
-                capture_output=True,
-                timeout=5
-            )
-
-            results.append("Passed ✅" if result.stdout.strip() == case["output"] else "Failed ❌")
-
-        os.remove(temp_path)
-        return jsonify({"results": results})
-
-    except Exception as e:
-        return jsonify({"results": [str(e)]})
-
-
-# ---------------- RUN ---------------- #
 
 if __name__ == "__main__":
     app.run(debug=True)

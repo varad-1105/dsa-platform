@@ -2,13 +2,6 @@
 <html>
 
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LB7BM5759H"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-LB7BM5759H');
-</script>
 
 <title>Problems</title>
 
@@ -41,34 +34,7 @@ font-size:18px;
 color:#1abc9c;
 }
 
-.nav-right{
-display:flex;
-align-items:center;
-gap:12px;
-}
-
-.username{
-background:#34495e;
-color:white;
-padding:6px 12px;
-border-radius:15px;
-font-size:14px;
-}
-
-.logout-btn{
-background:#e74c3c;
-color:white;
-padding:6px 12px;
-border-radius:6px;
-text-decoration:none;
-font-size:14px;
-}
-
-.logout-btn:hover{
-background:#c0392b;
-}
-
-/* MAIN CONTAINER */
+/* CONTAINER */
 
 .container{
 width:70%;
@@ -76,38 +42,7 @@ margin:auto;
 margin-top:40px;
 }
 
-/* SEARCH */
-
-.search{
-width:100%;
-padding:12px;
-font-size:16px;
-margin-bottom:20px;
-border-radius:6px;
-border:1px solid #ccc;
-}
-
-/* FILTERS */
-
-.filters{
-margin-bottom:20px;
-}
-
-.filter-btn{
-padding:8px 14px;
-margin-right:10px;
-margin-bottom:10px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-background:#ddd;
-}
-
-.filter-btn:hover{
-background:#ccc;
-}
-
-/* PROBLEMS */
+/* PROBLEM CARD */
 
 .problem{
 background:white;
@@ -115,7 +50,6 @@ padding:20px;
 margin:15px 0;
 border-radius:8px;
 box-shadow:0 2px 5px rgba(0,0,0,0.1);
-font-size:18px;
 display:flex;
 justify-content:space-between;
 align-items:center;
@@ -127,15 +61,35 @@ background:#eaf2f8;
 cursor:pointer;
 }
 
+/* LEFT SIDE */
+
 .problem-left{
 display:flex;
-gap:15px;
-align-items:center;
-flex-wrap:wrap;
+flex-direction:column;
+gap:6px;
 }
 
-.status{
+/* TITLE */
+
+.title{
+font-weight:bold;
 font-size:16px;
+}
+
+/* DESCRIPTION */
+
+.desc{
+font-size:13px;
+color:#555;
+max-width:500px;
+}
+
+/* META */
+
+.meta{
+display:flex;
+gap:10px;
+align-items:center;
 }
 
 /* DIFFICULTY */
@@ -143,7 +97,7 @@ font-size:16px;
 .difficulty{
 padding:4px 10px;
 border-radius:10px;
-font-size:14px;
+font-size:13px;
 color:white;
 }
 
@@ -151,7 +105,7 @@ color:white;
 .medium{ background:#f39c12; }
 .hard{ background:#e74c3c; }
 
-/* TAGS */
+/* TAG */
 
 .tag{
 background:#3498db;
@@ -161,39 +115,11 @@ border-radius:6px;
 font-size:12px;
 }
 
-/* COMPANY */
-
-.company{
-background:#9b59b6;
-}
+/* LINK */
 
 a{
 text-decoration:none;
 color:black;
-}
-
-/* PROGRESS */
-
-.progress{
-margin-bottom:10px;
-font-size:20px;
-font-weight:bold;
-}
-
-.progress-bar{
-width:100%;
-background:#ddd;
-border-radius:10px;
-overflow:hidden;
-margin-bottom:25px;
-height:20px;
-}
-
-.progress-fill{
-height:100%;
-width:0%;
-background:#27ae60;
-transition:width 0.5s;
 }
 
 </style>
@@ -203,70 +129,34 @@ transition:width 0.5s;
 <body>
 
 <div class="navbar">
-
 <div class="nav-left">
 <a href="/">Home</a>
 <a href="/learn">Learn</a>
 <a href="/problems">Problems</a>
-<a href="/leaderboard">Leaderboard</a>
-<a href="/feedback">Feedback</a>
 </div>
-
-<div class="nav-right">
-
-{% if session.username %}
-<a href="/dashboard" style="color:white;">Dashboard</a>
-<span class="username">👤 {{ session.username }}</span>
-<a href="/logout" class="logout-btn">Logout</a>
-{% else %}
-<a href="/login" style="color:white;">Login</a>
-{% endif %}
-
-</div>
-
 </div>
 
 <div class="container">
 
 <h2>Top Interview Problems</h2>
 
-<div class="progress" id="progress">
-Solved: 0 / 100
-</div>
-
-<div class="progress-bar">
-<div class="progress-fill" id="progress-fill"></div>
-</div>
-
-<input type="text" class="search" id="searchBox"
-placeholder="Search problems..." onkeyup="searchProblems()"/>
-
-<div class="filters">
-
-<b>Difficulty:</b><br>
-<button class="filter-btn" onclick="filterDifficulty('all')">All</button>
-<button class="filter-btn" onclick="filterDifficulty('easy')">Easy</button>
-<button class="filter-btn" onclick="filterDifficulty('medium')">Medium</button>
-<button class="filter-btn" onclick="filterDifficulty('hard')">Hard</button>
-
-<br><br>
-
-<b>Companies:</b><br>
-<button class="filter-btn" onclick="filterCompany('all')">All</button>
-<button class="filter-btn" onclick="filterCompany('google')">Google</button>
-<button class="filter-btn" onclick="filterCompany('amazon')">Amazon</button>
-
-</div>
-
-<!-- 🔥 DYNAMIC PROBLEMS -->
-
 {% for q in questions %}
 
-<div class="problem {{ q.difficulty|lower }} {{ q.company|lower }}">
+<a href="/question/{{ q.id }}">
+
+<div class="problem">
 
 <div class="problem-left">
 
-<span class="problem-name">{{ loop.index }}. {{ q.title }}</span>
+<div class="title">
+{{ loop.index }}. {{ q.title }}
+</div>
+
+<div class="desc">
+{{ q.description }}
+</div>
+
+<div class="meta">
 
 <span class="difficulty {{ q.difficulty|lower }}">
 {{ q.difficulty }}
@@ -274,66 +164,17 @@ placeholder="Search problems..." onkeyup="searchProblems()"/>
 
 <span class="tag">{{ q.topic }}</span>
 
-<span class="tag company">{{ q.company }}</span>
+</div>
 
 </div>
 
-<span class="status">❌ Unsolved</span>
-
 </div>
+
+</a>
 
 {% endfor %}
 
 </div>
-
-<script>
-
-fetch("/progress")
-.then(res => res.json())
-.then(data => {
-document.getElementById("progress").innerText =
-"Solved: " + data.solved + " / " + data.total;
-
-let percent = (data.solved / data.total) * 100;
-document.getElementById("progress-fill").style.width = percent + "%";
-});
-
-
-function searchProblems(){
-let input = document.getElementById("searchBox").value.toLowerCase();
-let problems = document.getElementsByClassName("problem");
-
-for(let i=0;i<problems.length;i++){
-let name = problems[i].innerText.toLowerCase();
-problems[i].style.display = name.includes(input) ? "flex" : "none";
-}
-}
-
-function filterDifficulty(level){
-let problems = document.getElementsByClassName("problem");
-
-for(let i=0;i<problems.length;i++){
-if(level === "all" || problems[i].classList.contains(level)){
-problems[i].style.display = "flex";
-}else{
-problems[i].style.display = "none";
-}
-}
-}
-
-function filterCompany(company){
-let problems = document.getElementsByClassName("problem");
-
-for(let i=0;i<problems.length;i++){
-if(company === "all" || problems[i].classList.contains(company)){
-problems[i].style.display = "flex";
-}else{
-problems[i].style.display = "none";
-}
-}
-}
-
-</script>
 
 </body>
 </html>
