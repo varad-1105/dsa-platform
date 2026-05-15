@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="shell nav-inner">
+      <a class="brand" href="/"><span class="brand-mark">DS</span><span>DSA Platform</span></a>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/problems">Problems</a>
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">Theme</button>
+      </div>
+    </div>
+  </nav>
+  <main class="shell page">
+    <div class="eyebrow">Gamification</div>
+    <h1 class="page-title">Leaderboard</h1>
+    <section class="panel">
+      {% for user in leaders %}
+        <div class="problem-row">
+          <span class="muted">#{{ loop.index }}</span>
+          <strong>{{ user.username }}</strong>
+          <span class="row"><span class="pill">{{ user.solved_count }} solved</span><span class="pill">{{ user.xp }} XP</span></span>
+        </div>
+      {% endfor %}
+      {% if leaders|length == 0 %}
+        <p class="muted">No rankings yet. Solve a problem to claim the first spot.</p>
+      {% endif %}
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

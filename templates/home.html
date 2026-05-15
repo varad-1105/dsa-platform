@@ -1,269 +1,67 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<!-- Google tag -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LB7BM5759H"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-LB7BM5759H');
-</script>
-
-<title>DSA Platform</title>
-
-<style>
-
-body{
-font-family:'Segoe UI', Arial, sans-serif;
-margin:0;
-background:linear-gradient(135deg,#f0f4ff,#e8f5ff);
-transition:0.3s;
-}
-
-body.dark{
-background:#121212;
-color:#e4e4e4;
-}
-
-/* NAVBAR */
-
-.navbar{
-background:linear-gradient(90deg,#2c3e50,#34495e);
-padding:18px;
-display:flex;
-justify-content:center;
-gap:40px;
-position:relative;
-}
-
-.navbar a{
-color:white;
-text-decoration:none;
-font-size:18px;
-font-weight:500;
-}
-
-.navbar a:hover{
-color:#1abc9c;
-}
-
-.dark-toggle{
-position:absolute;
-right:20px;
-top:12px;
-padding:8px 14px;
-border:none;
-border-radius:6px;
-background:#1abc9c;
-color:white;
-cursor:pointer;
-}
-
-/* HERO */
-
-.hero{
-text-align:center;
-padding:120px 20px 80px;
-}
-
-.hero h1{
-font-size:52px;
-background:linear-gradient(90deg,#3498db,#1abc9c);
--webkit-background-clip:text;
-color:transparent;
-margin-bottom:20px;
-}
-
-.hero p{
-font-size:20px;
-color:#555;
-margin-bottom:40px;
-}
-
-body.dark .hero p{
-color:#ccc;
-}
-
-/* BUTTONS */
-
-.btn{
-padding:14px 30px;
-font-size:18px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-margin:10px;
-transition:0.3s;
-box-shadow:0 4px 10px rgba(0,0,0,0.15);
-}
-
-.btn-primary{
-background:linear-gradient(90deg,#3498db,#2980b9);
-color:white;
-}
-
-.btn-secondary{
-background:linear-gradient(90deg,#1abc9c,#16a085);
-color:white;
-}
-
-/* SUPPORT BUTTON */
-
-.btn-support{
-background:#f39c12;
-color:white;
-}
-
-/* FEATURES */
-
-.features{
-display:flex;
-justify-content:center;
-gap:30px;
-flex-wrap:wrap;
-padding:40px 20px 80px 20px;
-}
-
-.feature-card{
-background:white;
-width:260px;
-padding:30px;
-border-radius:12px;
-box-shadow:0 6px 18px rgba(0,0,0,0.12);
-text-align:center;
-transition:0.3s;
-border-top:5px solid #3498db;
-}
-
-body.dark .feature-card{
-background:#2b2b2b;
-}
-
-.feature-card:nth-child(2){
-border-top:5px solid #1abc9c;
-}
-
-.feature-card:nth-child(3){
-border-top:5px solid #9b59b6;
-}
-
-.feature-card:nth-child(4){
-border-top:5px solid #f39c12;
-}
-
-/* FOOTER */
-
-.footer{
-text-align:center;
-padding:25px;
-background:#2c3e50;
-color:white;
-font-size:14px;
-}
-
-body.dark .footer{
-background:#1f1f1f;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSA Platform</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
-
 <body>
+  <nav class="nav">
+    <div class="shell nav-inner">
+      <a class="brand" href="/"><span class="brand-mark">DS</span><span>DSA Platform</span></a>
+      <div class="nav-links">
+        <a href="/learn">Roadmap</a>
+        <a href="/problems">Problems</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/feedback">Feedback</a>
+        {% if session.username %}
+          <a href="/dashboard">Dashboard</a>
+        {% else %}
+          <a href="/login">Login</a>
+        {% endif %}
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">Theme</button>
+      </div>
+    </div>
+  </nav>
 
-<div class="navbar">
+  <main class="shell hero">
+    <section class="hero-grid">
+      <div>
+        <div class="eyebrow">Interview prep, structured by patterns</div>
+        <h1>Master DSA with a premium practice workflow.</h1>
+        <p>
+          Solve a curated 100-problem roadmap with Monaco editing, test cases,
+          visual explanations, streaks, XP, topic progress, and smart next steps.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="/problems">Start solving</a>
+          <a class="btn secondary" href="/learn">View roadmap</a>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="row" style="justify-content: space-between;">
+          <span class="badge">Daily challenge</span>
+          <span class="muted">Beginner to advanced</span>
+        </div>
+        <h2>Practice like the real interview loop.</h2>
+        <div class="grid">
+          <div class="card"><strong>Run and submit</strong><p class="muted">Use sample, hidden, and custom input tests.</p></div>
+          <div class="card"><strong>Learn visually</strong><p class="muted">Topic-based diagrams explain the pattern behind each solution.</p></div>
+          <div class="card"><strong>Track momentum</strong><p class="muted">Streaks, XP, badges, accuracy, and weak-area recommendations.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-<a href="/">Home</a>
-<a href="/learn">Learn</a>
-<a href="/problems">Problems</a>
-<a href="/leaderboard">Leaderboard</a>
-<a href="/feedback">Feedback</a>
+  <section class="shell page">
+    <div class="grid three">
+      <div class="card"><h3>Curated roadmap</h3><p class="muted">Arrays, graphs, DP, heaps, tries, binary search, and the full interview pattern set.</p></div>
+      <div class="card"><h3>Modern editor</h3><p class="muted">Monaco templates, autosave, theme sync, console output, runtime, and memory estimates.</p></div>
+      <div class="card"><h3>Real progress</h3><p class="muted">Topic progress, difficulty splits, heatmap activity, achievements, and recommendations.</p></div>
+    </div>
+  </section>
 
-{% if session.username %}
-<a href="/dashboard">Dashboard</a>
-{% else %}
-<a href="/login">Login</a>
-{% endif %}
-
-<button class="dark-toggle" onclick="toggleTheme()">🌙 Dark</button>
-
-</div>
-
-
-<div class="hero">
-
-<h1>Master DSA for Coding Interviews</h1>
-
-<p>Practice the <b>Top 100 curated DSA problems</b> asked in real tech interviews.</p>
-
-<a href="/learn">
-<button class="btn btn-primary">Start Learning</button>
-</a>
-
-<a href="/problems">
-<button class="btn btn-secondary">Solve Problems</button>
-</a>
-
-<br>
-
-<a href="/support">
-<button class="btn btn-support">❤️ Support</button>
-</a>
-
-</div>
-
-
-<div class="features">
-
-<div class="feature-card">
-<h3>100 Curated Problems</h3>
-<p>Focus only on the most important DSA interview questions.</p>
-</div>
-
-<div class="feature-card">
-<h3>Interactive Code Editor</h3>
-<p>Write and run code directly inside the browser.</p>
-</div>
-
-<div class="feature-card">
-<h3>Track Your Progress</h3>
-<p>Monitor solved problems and stay consistent.</p>
-</div>
-
-<div class="feature-card">
-<h3>Hints & Solutions</h3>
-<p>Get hints when stuck and optimized solutions.</p>
-</div>
-
-</div>
-
-<div class="footer">
-DSA Platform • Built with ❤️ by Varad
-</div>
-
-
-<script>
-
-if(localStorage.getItem("theme") === "dark"){
-document.body.classList.add("dark")
-}
-
-function toggleTheme(){
-
-document.body.classList.toggle("dark")
-
-if(document.body.classList.contains("dark")){
-localStorage.setItem("theme","dark")
-}else{
-localStorage.setItem("theme","light")
-}
-
-}
-
-</script>
-
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
-
 </html>

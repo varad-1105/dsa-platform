@@ -1,194 +1,131 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LB7BM5759H"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LB7BM5759H');
-</script>
-<title>Dashboard</title>
-
-<style>
-
-body{
-font-family: Arial;
-margin:0;
-background:#f4f6f8;
-}
-
-.navbar{
-background:#2c3e50;
-padding:15px 30px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.navbar a{
-color:white;
-text-decoration:none;
-margin-right:20px;
-font-size:16px;
-}
-
-.username{
-background:#34495e;
-color:white;
-padding:6px 12px;
-border-radius:15px;
-}
-
-.logout-btn{
-background:#e74c3c;
-color:white;
-padding:6px 12px;
-border-radius:6px;
-text-decoration:none;
-}
-
-.container{
-width:60%;
-margin:auto;
-margin-top:60px;
-}
-
-.card{
-background:white;
-padding:30px;
-border-radius:10px;
-box-shadow:0 4px 12px rgba(0,0,0,0.1);
-}
-
-.progress-bar{
-width:100%;
-background:#ddd;
-border-radius:10px;
-overflow:hidden;
-height:20px;
-margin-top:10px;
-}
-
-.progress-fill{
-height:100%;
-background:#27ae60;
-width:0%;
-transition:0.4s;
-}
-
-.stats{
-margin-top:25px;
-display:flex;
-justify-content:space-between;
-}
-
-.stat{
-background:#f2f2f2;
-padding:15px;
-border-radius:8px;
-width:30%;
-text-align:center;
-}
-
-.stat h3{
-margin:0;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
-
 <body>
+  <nav class="nav">
+    <div class="shell nav-inner">
+      <a class="brand" href="/"><span class="brand-mark">DS</span><span>DSA Platform</span></a>
+      <div class="nav-links">
+        <a href="/problems">Problems</a>
+        <a href="/learn">Roadmap</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/feedback">Feedback</a>
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">Theme</button>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
 
-<div class="navbar">
+  <main class="shell page">
+    <div class="row" style="justify-content: space-between;">
+      <div>
+        <div class="eyebrow">Welcome back</div>
+        <h1 class="page-title">{{ session.username }}</h1>
+      </div>
+      <a class="btn" href="/problems">Continue practice</a>
+    </div>
 
-<div>
-<a href="/">Home</a>
-<a href="/problems">Problems</a>
-<a href="/leaderboard">Leaderboard</a>
-<a href="/feedback">Feedback</a>
-</div>
+    <section class="dashboard-layout">
+      <div class="grid">
+        <div class="panel">
+          <div class="row" style="justify-content: space-between;">
+            <h2>Progress</h2>
+            <span class="pill" id="progress-text">0 / 100</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+          <div class="grid three" style="margin-top: 16px;">
+            <div class="stat"><strong id="easy">0</strong><span class="muted">Easy solved</span></div>
+            <div class="stat"><strong id="medium">0</strong><span class="muted">Medium solved</span></div>
+            <div class="stat"><strong id="hard">0</strong><span class="muted">Hard solved</span></div>
+          </div>
+        </div>
 
-<div>
-<span class="username">👤 {{ session.username }}</span>
-<a href="/logout" class="logout-btn">Logout</a>
-</div>
+        <div class="panel">
+          <div class="row" style="justify-content: space-between;">
+            <h2>Topic progress</h2>
+            <span class="pill" id="weak-area">Loading</span>
+          </div>
+          <div id="topics" class="grid"></div>
+        </div>
 
-</div>
+        <div class="panel">
+          <h2>Activity heatmap</h2>
+          <div class="heatmap" id="heatmap"></div>
+        </div>
+      </div>
 
-<div class="container">
+      <aside class="grid">
+        <div class="panel">
+          <h2>Today</h2>
+          <p class="muted">Daily challenge</p>
+          <a id="daily" class="btn secondary" href="/problems">Open challenge</a>
+        </div>
+        <div class="grid two">
+          <div class="stat"><strong id="xp">0</strong><span class="muted">XP</span></div>
+          <div class="stat"><strong id="streak">0</strong><span class="muted">Day streak</span></div>
+          <div class="stat"><strong id="accuracy">0%</strong><span class="muted">Accuracy</span></div>
+          <div class="stat"><strong id="badges">0</strong><span class="muted">Badges</span></div>
+        </div>
+        <div class="panel">
+          <h2>Recommended next</h2>
+          <div id="recommended" class="grid"></div>
+        </div>
+        <div class="panel">
+          <h2>Recent activity</h2>
+          <div id="recent" class="grid"></div>
+        </div>
+      </aside>
+    </section>
+  </main>
 
-<div class="card">
-
-<h2>Welcome, {{ session.username }}</h2>
-
-<h3>Solved Problems</h3>
-
-<p id="progress-text">0 / 100</p>
-
-<div class="progress-bar">
-<div class="progress-fill" id="progress-fill"></div>
-</div>
-
-<div class="stats">
-
-<div class="stat">
-<h3 id="easy">0</h3>
-<p>Easy</p>
-</div>
-
-<div class="stat">
-<h3 id="medium">0</h3>
-<p>Medium</p>
-</div>
-
-<div class="stat">
-<h3 id="hard">0</h3>
-<p>Hard</p>
-</div>
-
-</div>
-
-<br>
-
-<p>Keep solving problems to unlock more challenges 🚀</p>
-
-</div>
-
-</div>
-
-<script>
-
-fetch("/progress")
-.then(res => res.json())
-.then(data => {
-
-document.getElementById("progress-text").innerText =
-data.solved + " / " + data.total
-
-let percent = (data.solved / data.total) * 100
-
-document.getElementById("progress-fill").style.width =
-percent + "%"
-
-})
-
-fetch("/user-stats")
-.then(res => res.json())
-.then(data => {
-
-document.getElementById("easy").innerText = data.easy
-document.getElementById("medium").innerText = data.medium
-document.getElementById("hard").innerText = data.hard
-
-})
-
-</script>
-
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script>
+    async function loadDashboard() {
+      const [progressRes, statsRes, dashRes] = await Promise.all([
+        fetch("/progress"),
+        fetch("/user-stats"),
+        fetch("/api/dashboard"),
+      ]);
+      const progress = await progressRes.json();
+      const stats = await statsRes.json();
+      const dash = await dashRes.json();
+      const pct = progress.total ? Math.round((progress.solved / progress.total) * 100) : 0;
+      document.getElementById("progress-text").innerText = `${progress.solved} / ${progress.total}`;
+      document.getElementById("progress-fill").style.width = `${pct}%`;
+      document.getElementById("easy").innerText = stats.easy;
+      document.getElementById("medium").innerText = stats.medium;
+      document.getElementById("hard").innerText = stats.hard;
+      document.getElementById("xp").innerText = stats.xp;
+      document.getElementById("streak").innerText = stats.streak;
+      document.getElementById("accuracy").innerText = `${stats.accuracy}%`;
+      document.getElementById("badges").innerText = stats.badges.length;
+      document.getElementById("weak-area").innerText = dash.weak_area ? `Focus: ${dash.weak_area.topic}` : "Balanced";
+      if (dash.daily) {
+        document.getElementById("daily").href = `/question/${dash.daily.id}`;
+        document.getElementById("daily").innerText = dash.daily.title;
+      }
+      document.getElementById("topics").innerHTML = stats.topics.map(t => {
+        const width = t.total ? Math.round((t.solved / t.total) * 100) : 0;
+        return `<div><div class="row" style="justify-content:space-between;"><strong>${t.topic}</strong><span class="muted">${t.solved}/${t.total}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${width}%"></div></div></div>`;
+      }).join("");
+      document.getElementById("recommended").innerHTML = dash.recommended.map(q => `<a class="card" href="/question/${q.id}"><strong>${q.title}</strong><br><span class="${q.difficulty.toLowerCase()}">${q.difficulty}</span> <span class="muted">${q.topic}</span></a>`).join("");
+      document.getElementById("recent").innerHTML = (stats.recent.length ? stats.recent : [{action:"Start", detail:"Solve your first problem"}]).map(a => `<div class="card"><strong>${a.action}</strong><br><span class="muted">${a.detail}</span></div>`).join("");
+      const counts = new Map(dash.heatmap.map(h => [h.day, h.count]));
+      const today = new Date();
+      document.getElementById("heatmap").innerHTML = Array.from({length: 120}).map((_, i) => {
+        const d = new Date(today);
+        d.setDate(today.getDate() - (119 - i));
+        const key = d.toISOString().slice(0, 10);
+        const c = counts.get(key) || 0;
+        return `<span class="heat" title="${key}: ${c}" data-level="${Math.min(c, 3)}"></span>`;
+      }).join("");
+    }
+    loadDashboard();
+  </script>
 </body>
-
 </html>

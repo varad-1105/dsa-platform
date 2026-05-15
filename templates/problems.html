@@ -1,180 +1,106 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-<title>Problems</title>
-
-<style>
-
-body{
-font-family: Arial;
-margin:0;
-background-color:#f4f6f8;
-}
-
-/* NAVBAR */
-
-.navbar{
-background:#2c3e50;
-padding:15px 30px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.nav-left a{
-color:white;
-margin-right:20px;
-text-decoration:none;
-font-size:18px;
-}
-
-.nav-left a:hover{
-color:#1abc9c;
-}
-
-/* CONTAINER */
-
-.container{
-width:70%;
-margin:auto;
-margin-top:40px;
-}
-
-/* PROBLEM CARD */
-
-.problem{
-background:white;
-padding:20px;
-margin:15px 0;
-border-radius:8px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-display:flex;
-justify-content:space-between;
-align-items:center;
-transition:0.3s;
-}
-
-.problem:hover{
-background:#eaf2f8;
-cursor:pointer;
-}
-
-/* LEFT SIDE */
-
-.problem-left{
-display:flex;
-flex-direction:column;
-gap:6px;
-}
-
-/* TITLE */
-
-.title{
-font-weight:bold;
-font-size:16px;
-}
-
-/* DESCRIPTION */
-
-.desc{
-font-size:13px;
-color:#555;
-max-width:500px;
-}
-
-/* META */
-
-.meta{
-display:flex;
-gap:10px;
-align-items:center;
-}
-
-/* DIFFICULTY */
-
-.difficulty{
-padding:4px 10px;
-border-radius:10px;
-font-size:13px;
-color:white;
-}
-
-.easy{ background:#27ae60; }
-.medium{ background:#f39c12; }
-.hard{ background:#e74c3c; }
-
-/* TAG */
-
-.tag{
-background:#3498db;
-color:white;
-padding:3px 8px;
-border-radius:6px;
-font-size:12px;
-}
-
-/* LINK */
-
-a{
-text-decoration:none;
-color:black;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Problems</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
-
 <body>
+  <nav class="nav">
+    <div class="shell nav-inner">
+      <a class="brand" href="/"><span class="brand-mark">DS</span><span>DSA Platform</span></a>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/learn">Roadmap</a>
+        <a href="/feedback">Feedback</a>
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">Theme</button>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
 
-<div class="navbar">
-<div class="nav-left">
-<a href="/">Home</a>
-<a href="/learn">Learn</a>
-<a href="/problems">Problems</a>
-</div>
-</div>
+  <main class="shell page">
+    <div class="row" style="justify-content: space-between;">
+      <div>
+        <div class="eyebrow">100 problem roadmap</div>
+        <h1 class="page-title">Practice problems</h1>
+      </div>
+      <span class="pill" id="count">{{ questions|length }} problems</span>
+    </div>
 
-<div class="container">
+    <section class="filters">
+      <input class="input" id="search" placeholder="Search title, topic, tag">
+      <select id="topic">
+        <option value="">All topics</option>
+        {% for topic in topics %}<option value="{{ topic }}">{{ topic }}</option>{% endfor %}
+      </select>
+      <select id="difficulty">
+        <option value="">All difficulty</option>
+        <option>Easy</option>
+        <option>Medium</option>
+        <option>Hard</option>
+      </select>
+      <select id="status">
+        <option value="">All status</option>
+        <option value="solved">Solved</option>
+        <option value="unsolved">Unsolved</option>
+      </select>
+      <select id="list">
+        <option value="">All lists</option>
+        <option value="blind75">Blind 75</option>
+        <option value="neetcode150">NeetCode 150</option>
+      </select>
+    </section>
 
-<h2>Top Interview Problems</h2>
+    <section id="problem-list">
+      {% for q in questions %}
+      <a class="problem-row" href="/question/{{ q.id }}">
+        <span class="muted">{{ loop.index }}</span>
+        <span>
+          <span class="problem-title">{{ q.title }}</span>
+          <span class="problem-desc">{{ q.description }}</span>
+        </span>
+        <span class="row">
+          {% if q.solved %}<span class="pill">Solved</span>{% endif %}
+          <span class="{{ q.difficulty|lower }}">{{ q.difficulty }}</span>
+          <span class="pill">{{ q.topic }}</span>
+        </span>
+      </a>
+      {% endfor %}
+    </section>
+  </main>
 
-{% for q in questions %}
-
-<a href="/question/{{ q.id }}">
-
-<div class="problem">
-
-<div class="problem-left">
-
-<div class="title">
-{{ loop.index }}. {{ q.title }}
-</div>
-
-<div class="desc">
-{{ q.description }}
-</div>
-
-<div class="meta">
-
-<span class="difficulty {{ q.difficulty|lower }}">
-{{ q.difficulty }}
-</span>
-
-<span class="tag">{{ q.topic }}</span>
-
-</div>
-
-</div>
-
-</div>
-
-</a>
-
-{% endfor %}
-
-</div>
-
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script>
+    const fields = ["search", "topic", "difficulty", "status", "list"].map(id => document.getElementById(id));
+    fields.forEach(field => field.addEventListener("input", loadProblems));
+    async function loadProblems() {
+      const params = new URLSearchParams({
+        q: document.getElementById("search").value,
+        topic: document.getElementById("topic").value,
+        difficulty: document.getElementById("difficulty").value,
+        status: document.getElementById("status").value,
+        list: document.getElementById("list").value,
+      });
+      const res = await fetch(`/api/problems?${params}`);
+      const data = await res.json();
+      document.getElementById("count").innerText = `${data.problems.length} problems`;
+      document.getElementById("problem-list").innerHTML = data.problems.map((q, index) => `
+        <a class="problem-row" href="/question/${q.id}">
+          <span class="muted">${index + 1}</span>
+          <span>
+            <span class="problem-title">${q.title}</span>
+            <span class="problem-desc">${q.description || ""}</span>
+          </span>
+          <span class="row">
+            ${q.solved ? '<span class="pill">Solved</span>' : ''}
+            <span class="${q.difficulty.toLowerCase()}">${q.difficulty}</span>
+            <span class="pill">${q.topic}</span>
+          </span>
+        </a>
+      `).join("");
+    }
+  </script>
 </body>
 </html>
